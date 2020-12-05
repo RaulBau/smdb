@@ -42,7 +42,6 @@ namespace SMBD
             Directory.CreateDirectory(pathBase);
             //Directory.SetCurrentDirectory(pathBase);
             inicializaDirectorio(pathBase);
-            Console.WriteLine(Directory.GetCurrentDirectory());
         }
 
         private void openFD1_FileOk(object sender, CancelEventArgs e)
@@ -59,6 +58,65 @@ namespace SMBD
             saveFD1.InitialDirectory = directorio;
             saveFDTabla.InitialDirectory = directorio;
             Directory.SetCurrentDirectory(directorio);
+            toolSTB_NombreBD.Text = obtenNombreBD();
+            Console.WriteLine(directorio);
+
+            listaTablasDirectorio();
+        }
+
+        private void listaTablasDirectorio()
+        {
+            string[] elementos;
+            if (pathBase != "")
+            {
+                elementos = Directory.GetFiles(pathBase);
+                listaTablas.Items.Clear();
+                elementos.ToList().ForEach(a =>
+                {
+                    if (Path.GetExtension(a) == ".t")
+                    {
+                        Console.WriteLine(a);
+                        listaTablas.Items.Add(Path.GetFileNameWithoutExtension(a));
+                    }
+                }
+                );
+            }
+
+        }
+
+        private void renombrarBase()
+        {
+            string path = "";
+            if (toolSTB_NombreBD.Text != "" && pathBase.Split(Path.DirectorySeparatorChar).Last() != toolSTB_NombreBD.Text && pathBase != "")
+            {
+                path = Path.GetDirectoryName(pathBase) + Path.DirectorySeparatorChar + toolSTB_NombreBD.Text;
+                Console.WriteLine(path);
+                if (Directory.Exists(path))
+                {
+                    MessageBox.Show("Este nombre ya existe", "ERROR");
+                }
+                else
+                {
+                    try
+                    {
+                        Directory.SetCurrentDirectory(Path.GetDirectoryName(pathBase));
+                        Directory.Move(pathBase, path);
+                        pathBase = path;
+                        inicializaDirectorio(pathBase);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+            }
+            else
+            {
+                if (pathBase == "")
+                {
+                    MessageBox.Show("Abre primero una base de datos", "ERROR");
+                }
+            }
         }
 
         #endregion
@@ -74,7 +132,6 @@ namespace SMBD
                     {
                         pathBase = commonOFD.FileName;
                         inicializaDirectorio(pathBase);
-                        Console.WriteLine(Directory.GetCurrentDirectory());
                     }
                     break;
                 case "Cerrar":
@@ -82,6 +139,9 @@ namespace SMBD
                     break;
                 case "Nueva":
                     saveFD1.ShowDialog();
+                    break;
+                case "Renombrar":
+
                     break;
             }
         }
@@ -107,7 +167,41 @@ namespace SMBD
         private void saveFDTabla_FileOk(object sender, CancelEventArgs e)
         {
             File.CreateText(saveFDTabla.FileName);
+            listaTablasDirectorio();
         }
         #endregion
+
+        private void toolSTB_NombreBD_Validated(object sender, EventArgs e)
+        {
+            MessageBox.Show("validado");
+        }
+
+        private void toolSTB_NombreBD_Leave(object sender, EventArgs e)
+        {
+            //toolSTB_NombreBD.Text = "";
+        }
+
+        private string obtenNombreBD()
+        {
+            string s = "";
+
+            if (pathBase != "")
+                s = Path.GetFileName(pathBase);
+
+            return s;
+        }
+
+        private void archivoToolStripMenuItem_DropDownClosed(object sender, EventArgs e)
+        {
+            toolSTB_NombreBD.Text = obtenNombreBD();
+        }
+
+        private void toolSTB_NombreBD_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\r' || e.KeyChar == '\n')
+            {
+                renombrarBase();
+            }
+        }
     }
 }
