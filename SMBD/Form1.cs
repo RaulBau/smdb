@@ -66,20 +66,33 @@ namespace SMBD
 
         private void listaTablasDirectorio()
         {
+            tV_ListaTablas.Nodes.Clear();
+            TreeNode t = new TreeNode();
             string[] elementos;
             if (pathBase != "")
             {
+                t.Text = Path.GetFileName(pathBase);
+                t.Name = Path.GetFileName(pathBase);
                 elementos = Directory.GetFiles(pathBase);
                 listaTablas.Items.Clear();
+                listView1.Items.Clear();
                 elementos.ToList().ForEach(a =>
                 {
                     if (Path.GetExtension(a) == ".t")
                     {
                         Console.WriteLine(a);
                         listaTablas.Items.Add(Path.GetFileNameWithoutExtension(a));
+                        listView1.Items.Add(Path.GetFileNameWithoutExtension(a));
+                        var nodo = new TreeNode();
+                        nodo.Text = Path.GetFileNameWithoutExtension(a);
+                        nodo.Name = Path.GetFileNameWithoutExtension(a);
+
+                        t.Nodes.Add(nodo);
                     }
                 }
                 );
+                tV_ListaTablas.Nodes.Add(t);
+                tV_ListaTablas.ExpandAll();
             }
 
         }
@@ -160,6 +173,49 @@ namespace SMBD
                         saveFDTabla.ShowDialog();
                     }
                     break;
+            }
+        }
+
+
+        private void tSTB_NuevaTabla_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\r' || e.KeyChar == '\n')
+            {
+                creaTabla();
+
+            }
+        }
+
+        private void creaTabla()
+        {
+            string path = "";
+            if (tSTB_NuevaTabla.Text != "" && pathBase != "")
+            {
+                path = pathBase + Path.DirectorySeparatorChar + tSTB_NuevaTabla.Text + ".t";
+                Console.WriteLine(path);
+                if (Directory.Exists(path))
+                {
+                    MessageBox.Show("Este nombre ya existe", "ERROR");
+                }
+                else
+                {
+                    try
+                    {
+                        File.Create(path);
+                        listaTablasDirectorio();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+            }
+            else
+            {
+                if (pathBase == "")
+                {
+                    MessageBox.Show("Abre primero una base de datos", "ERROR");
+                }
             }
         }
 

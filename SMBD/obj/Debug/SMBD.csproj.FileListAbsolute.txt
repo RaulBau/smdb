@@ -18,3 +18,23 @@ D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\bin\Deb
 D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.pdb
 D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.xml
 D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\obj\Debug\SMBD.csproj.CopyComplete
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\SMBD.exe.config
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\SMBD.exe
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\SMBD.pdb
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.dll
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.dll
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.pdb
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.xml
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.Shell.pdb
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.pdb
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.xml
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csprojAssemblyReference.cache
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.Form1.resources
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.Properties.Resources.resources
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csproj.GenerateResource.cache
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csproj.CoreCompileInputs.cache
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csproj.CopyComplete
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.exe
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.pdb
