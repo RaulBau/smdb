@@ -9,24 +9,37 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 
 namespace SMBD
 {
-    public class Tablas
+
+    public class Atributo
     {
         public string nombre;
         public string tipoDato;
         public int tam;
-        public string PK;
-        public List<string> FK;
 
-        Tablas()
+        public Atributo()
         {
             nombre = "";
-            PK = "";
-            FK = new List<string>();
             tipoDato = "";
             tam = 0;
+        }
+
+    }
+
+    public class Tabla
+    {
+        public string nombre;
+        public Atributo PK;
+        public List<Atributo> FK;
+
+        public Tabla()
+        {
+            nombre = "";
+            PK = null;
+            FK = new List<Atributo>();
         }
     }
 
@@ -37,6 +50,7 @@ namespace SMBD
         private FolderBrowserDialog folderBD;
         CommonOpenFileDialog commonOFD;
         TreeNode nodo;
+        List<Tabla> tablas;
 
         public Form1()
         {
@@ -51,6 +65,7 @@ namespace SMBD
             commonOFD = new CommonOpenFileDialog();
             commonOFD.IsFolderPicker = true;
             inicializaDirectorio(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            tablas = new List<Tabla>();
         }
 
         #region Archivo
@@ -60,7 +75,7 @@ namespace SMBD
             pathBase = saveFD1.FileName;
             Directory.CreateDirectory(pathBase);
             File.Create(pathBase + Path.DirectorySeparatorChar + Path.GetFileName(pathBase) + ".bd");
-            //Directory.SetCurrentDirectory(pathBase);
+
             inicializaDirectorio(pathBase);
         }
 
@@ -256,6 +271,14 @@ namespace SMBD
                         {
                             Directory.Move(pathBase + Path.DirectorySeparatorChar + Path.GetFileName(nodo.Name), path);
                             listaTablasDirectorio();
+                            for (int i = 0; i < tablas.Count; i++)
+                            {
+                                if (tablas[i].nombre == Path.GetFileNameWithoutExtension(nodo.Name))
+                                {
+                                    tablas[i].nombre = Path.GetFileNameWithoutExtension(path);
+                                    break;
+                                }
+                            }
                             nodo = null;
                         }
                         catch (Exception e)
@@ -313,6 +336,17 @@ namespace SMBD
                     try
                     {
                         File.Create(path);
+                        var t = new Tabla();
+                        t.nombre = Path.GetFileName(path);
+                        tablas.Add(t);
+
+                        string s = JsonConvert.SerializeObject(tablas);
+                        var archivo = File.OpenWrite(pathBase + Path.DirectorySeparatorChar + Path.GetFileName(pathBase) + ".bd");
+                        if (archivo.CanWrite)
+                        {
+
+
+                        }
                         listaTablasDirectorio();
                     }
                     catch (Exception e)

@@ -37,4 +37,6 @@ C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csproj.C
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csproj.CopyComplete
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.exe
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.pdb
-C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.Tablas.resources
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.Atributo.resources
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Newtonsoft.Json.dll
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Newtonsoft.Json.xml
