@@ -46,8 +46,14 @@ namespace SMBD
             this.nuevaToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tSTB_NuevaTabla = new System.Windows.Forms.ToolStripTextBox();
             this.tV_ListaTablas = new System.Windows.Forms.TreeView();
+            this.eliminarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nombreTabla = new System.Windows.Forms.Label();
+            this.dGV_AtributosTabla = new System.Windows.Forms.DataGridView();
+            this.renombrarToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.tSTB_nombreTabla = new System.Windows.Forms.ToolStripTextBox();
             this.menuStrip1.SuspendLayout();
             this.cMS_ListaTablas.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dGV_AtributosTabla)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -67,6 +73,7 @@ namespace SMBD
             this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.abrirToolStripMenuItem,
             this.cerrarToolStripMenuItem,
+            this.eliminarToolStripMenuItem,
             this.nuevaToolStripMenuItem,
             this.renombrarToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
@@ -79,21 +86,21 @@ namespace SMBD
             // 
             this.abrirToolStripMenuItem.AccessibleName = "Abrir";
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.abrirToolStripMenuItem.Text = "Abrir";
             // 
             // cerrarToolStripMenuItem
             // 
             this.cerrarToolStripMenuItem.AccessibleName = "Cerrar";
             this.cerrarToolStripMenuItem.Name = "cerrarToolStripMenuItem";
-            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cerrarToolStripMenuItem.Text = "Cerrar";
             // 
             // nuevaToolStripMenuItem
             // 
             this.nuevaToolStripMenuItem.AccessibleName = "Nueva";
             this.nuevaToolStripMenuItem.Name = "nuevaToolStripMenuItem";
-            this.nuevaToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.nuevaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.nuevaToolStripMenuItem.Text = "Nueva";
             // 
             // renombrarToolStripMenuItem
@@ -102,7 +109,7 @@ namespace SMBD
             this.renombrarToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSTB_NombreBD});
             this.renombrarToolStripMenuItem.Name = "renombrarToolStripMenuItem";
-            this.renombrarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.renombrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.renombrarToolStripMenuItem.Text = "Renombrar";
             // 
             // toolSTB_NombreBD
@@ -145,9 +152,10 @@ namespace SMBD
             // cMS_ListaTablas
             // 
             this.cMS_ListaTablas.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.nuevaToolStripMenuItem2});
+            this.nuevaToolStripMenuItem2,
+            this.renombrarToolStripMenuItem1});
             this.cMS_ListaTablas.Name = "cMS_ListaTablas";
-            this.cMS_ListaTablas.Size = new System.Drawing.Size(109, 26);
+            this.cMS_ListaTablas.Size = new System.Drawing.Size(181, 70);
             // 
             // nuevaToolStripMenuItem2
             // 
@@ -155,7 +163,7 @@ namespace SMBD
             this.nuevaToolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tSTB_NuevaTabla});
             this.nuevaToolStripMenuItem2.Name = "nuevaToolStripMenuItem2";
-            this.nuevaToolStripMenuItem2.Size = new System.Drawing.Size(108, 22);
+            this.nuevaToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             this.nuevaToolStripMenuItem2.Text = "Nueva";
             // 
             // tSTB_NuevaTabla
@@ -167,16 +175,68 @@ namespace SMBD
             // 
             // tV_ListaTablas
             // 
+<<<<<<< HEAD
             this.tV_ListaTablas.Location = new System.Drawing.Point(12, 27);
             this.tV_ListaTablas.Name = "tV_ListaTablas";
             this.tV_ListaTablas.Size = new System.Drawing.Size(121, 245);
+=======
+            this.tV_ListaTablas.ContextMenuStrip = this.cMS_ListaTablas;
+            this.tV_ListaTablas.Location = new System.Drawing.Point(12, 27);
+            this.tV_ListaTablas.Name = "tV_ListaTablas";
+            this.tV_ListaTablas.Size = new System.Drawing.Size(121, 258);
+>>>>>>> 2d665c868794be0e68d97e918e42bf66e6cace02
             this.tV_ListaTablas.TabIndex = 4;
+            this.tV_ListaTablas.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tV_ListaTablas_NodeMouseClick);
+            // 
+            // eliminarToolStripMenuItem
+            // 
+            this.eliminarToolStripMenuItem.AccessibleName = "Eliminar";
+            this.eliminarToolStripMenuItem.Name = "eliminarToolStripMenuItem";
+            this.eliminarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.eliminarToolStripMenuItem.Text = "Eliminar";
+            // 
+            // nombreTabla
+            // 
+            this.nombreTabla.AutoSize = true;
+            this.nombreTabla.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nombreTabla.Location = new System.Drawing.Point(139, 27);
+            this.nombreTabla.Name = "nombreTabla";
+            this.nombreTabla.Size = new System.Drawing.Size(0, 20);
+            this.nombreTabla.TabIndex = 5;
+            // 
+            // dGV_AtributosTabla
+            // 
+            this.dGV_AtributosTabla.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dGV_AtributosTabla.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dGV_AtributosTabla.Location = new System.Drawing.Point(140, 60);
+            this.dGV_AtributosTabla.Name = "dGV_AtributosTabla";
+            this.dGV_AtributosTabla.Size = new System.Drawing.Size(648, 225);
+            this.dGV_AtributosTabla.TabIndex = 6;
+            // 
+            // renombrarToolStripMenuItem1
+            // 
+            this.renombrarToolStripMenuItem1.AccessibleName = "Renombrar";
+            this.renombrarToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tSTB_nombreTabla});
+            this.renombrarToolStripMenuItem1.Name = "renombrarToolStripMenuItem1";
+            this.renombrarToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.renombrarToolStripMenuItem1.Text = "Renombrar";
+            // 
+            // tSTB_nombreTabla
+            // 
+            this.tSTB_nombreTabla.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.tSTB_nombreTabla.Name = "tSTB_nombreTabla";
+            this.tSTB_nombreTabla.Size = new System.Drawing.Size(100, 23);
+            this.tSTB_nombreTabla.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tSTB_nombreTabla_KeyPress);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.dGV_AtributosTabla);
+            this.Controls.Add(this.nombreTabla);
             this.Controls.Add(this.tV_ListaTablas);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -187,6 +247,7 @@ namespace SMBD
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.cMS_ListaTablas.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dGV_AtributosTabla)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -210,6 +271,11 @@ namespace SMBD
         private System.Windows.Forms.ToolStripMenuItem nuevaToolStripMenuItem2;
         private System.Windows.Forms.ToolStripTextBox tSTB_NuevaTabla;
         private System.Windows.Forms.TreeView tV_ListaTablas;
+        private System.Windows.Forms.ToolStripMenuItem eliminarToolStripMenuItem;
+        private System.Windows.Forms.Label nombreTabla;
+        private System.Windows.Forms.DataGridView dGV_AtributosTabla;
+        private System.Windows.Forms.ToolStripMenuItem renombrarToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripTextBox tSTB_nombreTabla;
     }
 }
 
