@@ -40,3 +40,5 @@ C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.pdb
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.Atributo.resources
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Newtonsoft.Json.dll
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Newtonsoft.Json.xml
+D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\bin\Debug\Newtonsoft.Json.dll
+D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\bin\Debug\Newtonsoft.Json.xml

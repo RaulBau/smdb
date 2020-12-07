@@ -13,40 +13,43 @@ using Newtonsoft.Json;
 
 namespace SMBD
 {
-
-    public class Atributo
-    {
-        public string nombre;
-        public string tipoDato;
-        public int tam;
-
-        public Atributo()
-        {
-            nombre = "";
-            tipoDato = "";
-            tam = 0;
-        }
-
-    }
-
-    public class Tabla
-    {
-        public string nombre;
-        public Atributo PK;
-        public List<Atributo> FK;
-
-        public Tabla()
-        {
-            nombre = "";
-            PK = null;
-            FK = new List<Atributo>();
-        }
-    }
-
     public partial class Form1 : Form
     {
+        public class Atributo
+        {
+            public string nombre;
+            public string tipoDato;
+            public int tam;
+
+            public Atributo()
+            {
+                nombre = "";
+                tipoDato = "";
+                tam = 0;
+            }
+
+        }
+
+        public class Tabla
+        {
+            public string nombre;
+            public Atributo PK;
+            public List<Atributo> FK;
+            public List<Atributo> atributos;
+
+            public Tabla()
+            {
+                nombre = "";
+                PK = null;
+                FK = new List<Atributo>();
+                atributos = new List<Atributo>();
+            }
+        }
+
+
 
         string pathBase;
+        string tablaSeleccionada;
         private FolderBrowserDialog folderBD;
         CommonOpenFileDialog commonOFD;
         TreeNode nodo;
@@ -60,6 +63,7 @@ namespace SMBD
         private void Form1_Load(object sender, EventArgs e)
         {
             pathBase = "";
+            tablaSeleccionada = "";
             folderBD = new FolderBrowserDialog();
             folderBD.ShowNewFolderButton = false;
             commonOFD = new CommonOpenFileDialog();
@@ -157,6 +161,9 @@ namespace SMBD
                     Directory.Delete(pathBase);
 
                     pathBase = "";
+                    nombreTabla.Text = "";
+                    tV_ListaTablas.Nodes.Clear();
+                    dGV_AtributosTabla.Columns.Clear();
                     inicializaDirectorio(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
                 }
                 catch (Exception excp)
@@ -215,10 +222,29 @@ namespace SMBD
                     {
                         pathBase = commonOFD.FileName;
                         inicializaDirectorio(pathBase);
+                        string arch = pathBase + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(pathBase) + ".bd";
+                        if (File.Exists(arch))
+                        {
+                            try
+                            {
+                                using (StreamReader archivo = new StreamReader(arch))
+                                {
+                                    string j = archivo.ReadLine();
+                                    tablas = JsonConvert.DeserializeObject<List<Tabla>>(j);
+                                }
+                            }
+                            catch (Exception excep)
+                            {
+                                Console.WriteLine(excep);
+                            }
+                        }
                     }
                     break;
                 case "Cerrar":
                     pathBase = "";
+                    nombreTabla.Text = "";
+                    tV_ListaTablas.Nodes.Clear();
+                    dGV_AtributosTabla.Columns.Clear();
                     break;
                 case "Eliminar":
                     eliminarBase();
@@ -279,6 +305,10 @@ namespace SMBD
                                     break;
                                 }
                             }
+
+                            cargaTablaSeleccionada();
+                            guardaTablas();
+
                             nodo = null;
                         }
                         catch (Exception e)
@@ -297,12 +327,44 @@ namespace SMBD
                 }
         }
 
+        private void guardaTablas()
+        {
+            string s = JsonConvert.SerializeObject(tablas);
+            string arch = pathBase + Path.DirectorySeparatorChar + Path.GetFileName(pathBase) + ".bd";
+            using (StreamWriter archivo = new StreamWriter(arch, false))
+            {
+                archivo.WriteLine(s);
+            }
+        }
+
+        private void cargaTablaSeleccionada()
+        {
+            Tabla t = null;
+            if (tablaSeleccionada != "")
+                t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
+
+            if (t != null)
+            {
+                dGV_AtributosTabla.Columns.Clear();
+
+                t.atributos.ForEach(a =>
+                {
+                    dGV_AtributosTabla.Columns.Add(a.nombre, a.nombre);
+                });
+            }
+        }
+
         private void tV_ListaTablas_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    nombreTabla.Text = e.Node.Text;
+                    if (Path.GetExtension(e.Node.Name) == ".t")
+                    {
+                        nombreTabla.Text = e.Node.Text;
+                        tablaSeleccionada = e.Node.Name;
+                        cargaTablaSeleccionada();
+                    }
                     nodo = null;
                     break;
                 case MouseButtons.Right:
@@ -335,18 +397,15 @@ namespace SMBD
                 {
                     try
                     {
-                        File.Create(path);
+                        var f = File.Create(path);
+                        f.Close();
                         var t = new Tabla();
                         t.nombre = Path.GetFileName(path);
                         tablas.Add(t);
 
-                        string s = JsonConvert.SerializeObject(tablas);
-                        var archivo = File.OpenWrite(pathBase + Path.DirectorySeparatorChar + Path.GetFileName(pathBase) + ".bd");
-                        if (archivo.CanWrite)
-                        {
+                        cargaTablaSeleccionada();
+                        guardaTablas();
 
-
-                        }
                         listaTablasDirectorio();
                     }
                     catch (Exception e)
@@ -370,6 +429,7 @@ namespace SMBD
             File.CreateText(saveFDTabla.FileName);
             listaTablasDirectorio();
         }
+
         #endregion
 
         private void toolSTB_NombreBD_Validated(object sender, EventArgs e)
@@ -410,6 +470,131 @@ namespace SMBD
             if (e.KeyChar == '\r' || e.KeyChar == '\n')
             {
                 renombrarTabla();
+            }
+        }
+
+        #region Atributos
+
+        private void cB_llavePrimaria_Click(object sender, EventArgs e)
+        {
+            switch (cB_llavePrimaria.Checked)
+            {
+                case true:
+                    cB_llaveForanea.Enabled = false;
+                    break;
+                case false:
+                    cB_llaveForanea.Enabled = true;
+                    break;
+            }
+        }
+
+        private void cB_llaveForanea_Click(object sender, EventArgs e)
+        {
+            switch (cB_llaveForanea.Checked)
+            {
+                case true:
+                    cB_llavePrimaria.Enabled = false;
+                    cB_llavesForaneas.Visible = true;
+                    break;
+                case false:
+                    cB_llavePrimaria.Enabled = true;
+                    cB_llavesForaneas.Visible = false;
+                    break;
+            }
+        }
+
+        private void agregaAtributo()
+        {
+            int err = 0;
+
+            if (tB_NombreAtributo.Text == "")
+                err = 1;
+            if (cB_tipoAtributo.Text == "" && cB_tipoAtributo.Text != "Entero" && cB_tipoAtributo.Text != "Decimal" && cB_tipoAtributo.Text != "Cadena")
+                err = 2;
+            if (cB_llavesForaneas.Text == "" && cB_llaveForanea.Checked == true)
+                err = 3;
+
+            switch (err)
+            {
+                case 0:
+                    try
+                    {
+                        var atrib = new Atributo();
+                        atrib.nombre = tB_NombreAtributo.Text;
+                        atrib.tipoDato = cB_tipoAtributo.Text;
+
+                        if (atrib.tipoDato == "Cadena")
+                        {
+                            atrib.tam = int.Parse(tB_tamCadena.Text);
+                        }
+
+                        var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
+
+                        var a = t.atributos.Find(x => x.nombre == atrib.nombre);
+
+                        if (a == null)
+                        {
+                            MessageBox.Show("agregar atributo");
+                            t.atributos.Add(atrib);
+                            cargaTablaSeleccionada();
+                            guardaTablas();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Nombre de atributo repetido");
+                        }
+                    }
+                    catch (Exception excep)
+                    {
+                        MessageBox.Show(excep.Message);
+                    }
+                    break;
+                case 1:
+                    MessageBox.Show("Escribe un nombre");
+                    break;
+                case 2:
+                    MessageBox.Show("Selecciona un tipo de atributo");
+                    break;
+                case 3:
+                    MessageBox.Show("Selecciona una clave foranea");
+                    break;
+
+            }
+        }
+
+        private void btn_agregaArtibuto_Click(object sender, EventArgs e)
+        {
+            if (pathBase != "")
+            {
+                if (tablaSeleccionada != "")
+                {
+                    agregaAtributo();
+                }
+                else
+                {
+                    MessageBox.Show("Selecciona una tabla");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Abre una base de datos primero");
+            }
+        }
+
+        #endregion
+
+        private void cB_tipoAtributo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Console.WriteLine(cB_tipoAtributo.SelectedItem);
+
+            if (cB_tipoAtributo.SelectedItem.ToString() == "Cadena")
+            {
+                tB_tamCadena.Text = "0";
+                tB_tamCadena.Visible = true;
+            }
+            else
+            {
+                tB_tamCadena.Visible = false;
             }
         }
     }
