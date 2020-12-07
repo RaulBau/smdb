@@ -520,6 +520,7 @@ namespace SMBD
                     try
                     {
                         var atrib = new Atributo();
+                        Atributo a;
                         atrib.nombre = tB_NombreAtributo.Text;
                         atrib.tipoDato = cB_tipoAtributo.Text;
 
@@ -530,7 +531,7 @@ namespace SMBD
 
                         var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
 
-                        var a = t.atributos.Find(x => x.nombre == atrib.nombre);
+                        a = t.atributos.Find(x => x.nombre == atrib.nombre);
 
                         if (a == null)
                         {
