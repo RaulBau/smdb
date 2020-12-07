@@ -12,6 +12,24 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace SMBD
 {
+    public class Tablas
+    {
+        public string nombre;
+        public string tipoDato;
+        public int tam;
+        public string PK;
+        public List<string> FK;
+
+        Tablas()
+        {
+            nombre = "";
+            PK = "";
+            FK = new List<string>();
+            tipoDato = "";
+            tam = 0;
+        }
+    }
+
     public partial class Form1 : Form
     {
 

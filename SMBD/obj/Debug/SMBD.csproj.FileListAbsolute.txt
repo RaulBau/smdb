@@ -31,10 +31,10 @@ C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.Win
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.pdb
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\bin\Debug\Microsoft.WindowsAPICodePack.ShellExtensions.xml
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csprojAssemblyReference.cache
-C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.Form1.resources
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.Properties.Resources.resources
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csproj.GenerateResource.cache
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csproj.CoreCompileInputs.cache
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.csproj.CopyComplete
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.exe
 C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.pdb
+C:\Users\raulb\OneDrive\Documentos\Raul\proyecto-bd\SMBD\obj\Debug\SMBD.Tablas.resources
