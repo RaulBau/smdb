@@ -74,15 +74,11 @@ namespace SMBD
                 t.Text = Path.GetFileName(pathBase);
                 t.Name = Path.GetFileName(pathBase);
                 elementos = Directory.GetFiles(pathBase);
-                listaTablas.Items.Clear();
-                listView1.Items.Clear();
                 elementos.ToList().ForEach(a =>
                 {
                     if (Path.GetExtension(a) == ".t")
                     {
                         Console.WriteLine(a);
-                        listaTablas.Items.Add(Path.GetFileNameWithoutExtension(a));
-                        listView1.Items.Add(Path.GetFileNameWithoutExtension(a));
                         var nodo = new TreeNode();
                         nodo.Text = Path.GetFileNameWithoutExtension(a);
                         nodo.Name = Path.GetFileNameWithoutExtension(a);

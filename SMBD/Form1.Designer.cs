@@ -42,11 +42,9 @@ namespace SMBD
             this.saveFD1 = new System.Windows.Forms.SaveFileDialog();
             this.openFD1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFDTabla = new System.Windows.Forms.SaveFileDialog();
-            this.listaTablas = new System.Windows.Forms.ListBox();
             this.cMS_ListaTablas = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.nuevaToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tSTB_NuevaTabla = new System.Windows.Forms.ToolStripTextBox();
-            this.listView1 = new System.Windows.Forms.ListView();
             this.tV_ListaTablas = new System.Windows.Forms.TreeView();
             this.menuStrip1.SuspendLayout();
             this.cMS_ListaTablas.SuspendLayout();
@@ -144,15 +142,6 @@ namespace SMBD
             this.saveFDTabla.Filter = "Tabla|*.t|Todos los archivos|*.*";
             this.saveFDTabla.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFDTabla_FileOk);
             // 
-            // listaTablas
-            // 
-            this.listaTablas.ContextMenuStrip = this.cMS_ListaTablas;
-            this.listaTablas.FormattingEnabled = true;
-            this.listaTablas.Location = new System.Drawing.Point(12, 27);
-            this.listaTablas.Name = "listaTablas";
-            this.listaTablas.Size = new System.Drawing.Size(120, 212);
-            this.listaTablas.TabIndex = 1;
-            // 
             // cMS_ListaTablas
             // 
             this.cMS_ListaTablas.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -176,21 +165,11 @@ namespace SMBD
             this.tSTB_NuevaTabla.Size = new System.Drawing.Size(100, 23);
             this.tSTB_NuevaTabla.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tSTB_NuevaTabla_KeyPress);
             // 
-            // listView1
-            // 
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(138, 27);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(121, 97);
-            this.listView1.TabIndex = 3;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Tile;
-            // 
             // tV_ListaTablas
             // 
-            this.tV_ListaTablas.Location = new System.Drawing.Point(266, 29);
+            this.tV_ListaTablas.Location = new System.Drawing.Point(12, 27);
             this.tV_ListaTablas.Name = "tV_ListaTablas";
-            this.tV_ListaTablas.Size = new System.Drawing.Size(121, 97);
+            this.tV_ListaTablas.Size = new System.Drawing.Size(121, 245);
             this.tV_ListaTablas.TabIndex = 4;
             // 
             // Form1
@@ -199,8 +178,6 @@ namespace SMBD
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.tV_ListaTablas);
-            this.Controls.Add(this.listView1);
-            this.Controls.Add(this.listaTablas);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
@@ -229,11 +206,9 @@ namespace SMBD
         private System.Windows.Forms.SaveFileDialog saveFDTabla;
         private System.Windows.Forms.ToolStripMenuItem renombrarToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolSTB_NombreBD;
-        private System.Windows.Forms.ListBox listaTablas;
         private System.Windows.Forms.ContextMenuStrip cMS_ListaTablas;
         private System.Windows.Forms.ToolStripMenuItem nuevaToolStripMenuItem2;
         private System.Windows.Forms.ToolStripTextBox tSTB_NuevaTabla;
-        private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.TreeView tV_ListaTablas;
     }
 }
