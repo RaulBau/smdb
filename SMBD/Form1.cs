@@ -18,6 +18,7 @@ namespace SMBD
         string pathBase;
         private FolderBrowserDialog folderBD;
         CommonOpenFileDialog commonOFD;
+        TreeNode nodo;
 
         public Form1()
         {
@@ -40,6 +41,7 @@ namespace SMBD
         {
             pathBase = saveFD1.FileName;
             Directory.CreateDirectory(pathBase);
+            File.Create(pathBase + Path.DirectorySeparatorChar + Path.GetFileName(pathBase) + ".bd");
             //Directory.SetCurrentDirectory(pathBase);
             inicializaDirectorio(pathBase);
         }
@@ -74,18 +76,14 @@ namespace SMBD
                 t.Text = Path.GetFileName(pathBase);
                 t.Name = Path.GetFileName(pathBase);
                 elementos = Directory.GetFiles(pathBase);
-                listaTablas.Items.Clear();
-                listView1.Items.Clear();
                 elementos.ToList().ForEach(a =>
                 {
                     if (Path.GetExtension(a) == ".t")
                     {
                         Console.WriteLine(a);
-                        listaTablas.Items.Add(Path.GetFileNameWithoutExtension(a));
-                        listView1.Items.Add(Path.GetFileNameWithoutExtension(a));
                         var nodo = new TreeNode();
                         nodo.Text = Path.GetFileNameWithoutExtension(a);
-                        nodo.Name = Path.GetFileNameWithoutExtension(a);
+                        nodo.Name = a;
 
                         t.Nodes.Add(nodo);
                     }
@@ -95,6 +93,44 @@ namespace SMBD
                 tV_ListaTablas.ExpandAll();
             }
 
+        }
+
+        private void eliminarBase()
+        {
+            string[] archivos;
+            if (MessageBox.Show("¿Quieres eliminar la base de datos actual?", "¿Estas seguro?", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+
+                try
+                {
+
+                    archivos = Directory.GetFiles(pathBase);
+
+                    archivos.ToList().ForEach(arch =>
+                    {
+                        switch (Path.GetExtension(arch))
+                        {
+                            case ".bd":
+                                File.Delete(arch);
+                                break;
+                            case ".t":
+                                File.Delete(arch);
+                                break;
+                        }
+                    });
+
+                    var aux = Path.GetDirectoryName(pathBase);
+                    Directory.SetCurrentDirectory(aux);
+                    Directory.Delete(pathBase);
+
+                    pathBase = "";
+                    inicializaDirectorio(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+                }
+                catch (Exception excp)
+                {
+                    MessageBox.Show(excp.Message);
+                }
+            }
         }
 
         private void renombrarBase()
@@ -114,6 +150,7 @@ namespace SMBD
                     {
                         Directory.SetCurrentDirectory(Path.GetDirectoryName(pathBase));
                         Directory.Move(pathBase, path);
+                        Directory.Move(path + Path.DirectorySeparatorChar + Path.GetFileName(pathBase) + ".bd", path + Path.DirectorySeparatorChar + Path.GetFileName(path) + ".bd");
                         pathBase = path;
                         inicializaDirectorio(pathBase);
                     }
@@ -150,6 +187,9 @@ namespace SMBD
                 case "Cerrar":
                     pathBase = "";
                     break;
+                case "Eliminar":
+                    eliminarBase();
+                    break;
                 case "Nueva":
                     saveFD1.ShowDialog();
                     break;
@@ -173,16 +213,69 @@ namespace SMBD
                         saveFDTabla.ShowDialog();
                     }
                     break;
+                case "Renombrar":
+
+                    break;
             }
         }
 
+        private void renombrarTabla()
+        {
+            string path = "";
+
+            if (nodo != null)
+                if (tSTB_nombreTabla.Text != "" && tSTB_nombreTabla.Text != nodo.Text && pathBase != "")
+                {
+                    path = pathBase + Path.DirectorySeparatorChar + tSTB_nombreTabla.Text + ".t";
+                    Console.WriteLine(path);
+                    if (File.Exists(path))
+                    {
+                        MessageBox.Show("Este nombre ya existe", "ERROR");
+                    }
+                    else
+                    {
+                        try
+                        {
+                            Directory.Move(pathBase + Path.DirectorySeparatorChar + Path.GetFileName(nodo.Name), path);
+                            listaTablasDirectorio();
+                            nodo = null;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                            MessageBox.Show(e.Message);
+                        }
+                    }
+                }
+                else
+                {
+                    if (pathBase == "")
+                    {
+                        MessageBox.Show("Abre primero una base de datos", "ERROR");
+                    }
+                }
+        }
+
+        private void tV_ListaTablas_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    nombreTabla.Text = e.Node.Text;
+                    nodo = null;
+                    break;
+                case MouseButtons.Right:
+                    nodo = e.Node;
+                    tSTB_nombreTabla.Text = e.Node.Text;
+                    break;
+            }
+        }
 
         private void tSTB_NuevaTabla_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r' || e.KeyChar == '\n')
             {
                 creaTabla();
-
             }
         }
 
@@ -257,6 +350,14 @@ namespace SMBD
             if (e.KeyChar == '\r' || e.KeyChar == '\n')
             {
                 renombrarBase();
+            }
+        }
+
+        private void tSTB_nombreTabla_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\r' || e.KeyChar == '\n')
+            {
+                renombrarTabla();
             }
         }
     }
