@@ -86,8 +86,8 @@ namespace SMBD
             this.nuevaToolStripMenuItem,
             this.renombrarToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
-            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
-            this.archivoToolStripMenuItem.Text = "Archivo";
+            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
+            this.archivoToolStripMenuItem.Text = "Base de datos";
             this.archivoToolStripMenuItem.DropDownClosed += new System.EventHandler(this.archivoToolStripMenuItem_DropDownClosed);
             this.archivoToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.archivoToolStripMenuItem_DropDownItemClicked);
             // 
@@ -95,28 +95,28 @@ namespace SMBD
             // 
             this.abrirToolStripMenuItem.AccessibleName = "Abrir";
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.abrirToolStripMenuItem.Text = "Abrir";
             // 
             // cerrarToolStripMenuItem
             // 
             this.cerrarToolStripMenuItem.AccessibleName = "Cerrar";
             this.cerrarToolStripMenuItem.Name = "cerrarToolStripMenuItem";
-            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cerrarToolStripMenuItem.Text = "Cerrar";
             // 
             // eliminarToolStripMenuItem
             // 
             this.eliminarToolStripMenuItem.AccessibleName = "Eliminar";
             this.eliminarToolStripMenuItem.Name = "eliminarToolStripMenuItem";
-            this.eliminarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.eliminarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.eliminarToolStripMenuItem.Text = "Eliminar";
             // 
             // nuevaToolStripMenuItem
             // 
             this.nuevaToolStripMenuItem.AccessibleName = "Nueva";
             this.nuevaToolStripMenuItem.Name = "nuevaToolStripMenuItem";
-            this.nuevaToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.nuevaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.nuevaToolStripMenuItem.Text = "Nueva";
             // 
             // renombrarToolStripMenuItem
@@ -125,7 +125,7 @@ namespace SMBD
             this.renombrarToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSTB_NombreBD});
             this.renombrarToolStripMenuItem.Name = "renombrarToolStripMenuItem";
-            this.renombrarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.renombrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.renombrarToolStripMenuItem.Text = "Renombrar";
             // 
             // toolSTB_NombreBD

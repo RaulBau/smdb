@@ -245,6 +245,7 @@ namespace SMBD
                 case "Cerrar":
                     pathBase = "";
                     nombreTabla.Text = "";
+                    tablas.Clear();
                     tV_ListaTablas.Nodes.Clear();
                     dGV_AtributosTabla.Columns.Clear();
                     break;
@@ -308,8 +309,8 @@ namespace SMBD
                                 }
                             }
 
-                            cargaTablaSeleccionada();
                             guardaTablas();
+                            cargaTablaSeleccionada();
 
                             nodo = null;
                         }
@@ -352,6 +353,7 @@ namespace SMBD
 
                 t.atributos.ForEach(a =>
                 {
+                    llave = "";
                     if (t.PK != null && a.nombre == t.PK.nombre)
                     {
                         llave = " PK";
@@ -381,7 +383,8 @@ namespace SMBD
 
                 FKs.ForEach(fk =>
                 {
-                    cB_llavesForaneas.Items.Add(fk.nombre);
+                    if (fk != null && fk.nombre != null)
+                        cB_llavesForaneas.Items.Add(fk.nombre);
                 });
             }
         }
@@ -435,8 +438,8 @@ namespace SMBD
                         t.nombre = Path.GetFileName(path);
                         tablas.Add(t);
 
-                        cargaTablaSeleccionada();
                         guardaTablas();
+                        cargaTablaSeleccionada();
 
                         listaTablasDirectorio();
                     }
@@ -585,12 +588,15 @@ namespace SMBD
 
                             if (cB_llaveForanea.Checked == true)
                             {
-                                t.FK.Add(FKs[cB_llavesForaneas.SelectedIndex]);
+                                var at = FKs[cB_llavesForaneas.SelectedIndex];
+                                atrib.tipoDato = at.tipoDato;
+                                atrib.tam = at.tam;
+                                t.FK.Add( atrib);
                             }
 
                             t.atributos.Add(atrib);
-                            cargaTablaSeleccionada();
                             guardaTablas();
+                            cargaTablaSeleccionada();
                         }
                         else
                         {
