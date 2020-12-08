@@ -27,7 +27,6 @@ namespace SMBD
                 tipoDato = "";
                 tam = 0;
             }
-
         }
 
         public class Tabla
@@ -54,6 +53,7 @@ namespace SMBD
         CommonOpenFileDialog commonOFD;
         TreeNode nodo;
         List<Tabla> tablas;
+        List<Atributo> FKs;
 
         public Form1()
         {
@@ -70,6 +70,7 @@ namespace SMBD
             commonOFD.IsFolderPicker = true;
             inicializaDirectorio(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             tablas = new List<Tabla>();
+            FKs = new List<Atributo>();
         }
 
         #region Archivo
@@ -78,7 +79,8 @@ namespace SMBD
         {
             pathBase = saveFD1.FileName;
             Directory.CreateDirectory(pathBase);
-            File.Create(pathBase + Path.DirectorySeparatorChar + Path.GetFileName(pathBase) + ".bd");
+            var f = File.Create(pathBase + Path.DirectorySeparatorChar + Path.GetFileName(pathBase) + ".bd");
+            f.Close();
 
             inicializaDirectorio(pathBase);
         }
@@ -346,10 +348,40 @@ namespace SMBD
             if (t != null)
             {
                 dGV_AtributosTabla.Columns.Clear();
+                var llave = "";
 
                 t.atributos.ForEach(a =>
                 {
-                    dGV_AtributosTabla.Columns.Add(a.nombre, a.nombre);
+                    if (t.PK != null && a.nombre == t.PK.nombre)
+                    {
+                        llave = " PK";
+                    }
+
+                    var fk = t.FK.Find(x => x.nombre == a.nombre);
+
+                    if (fk != null)
+                    {
+                        llave = " FK";
+                    }
+
+                    dGV_AtributosTabla.Columns.Add(a.nombre, a.nombre + llave);
+                });
+
+                FKs.Clear();
+
+                tablas.ForEach(tab =>
+                {
+                    if (tab.nombre != t.nombre)
+                    {
+                        FKs.Add(tab.PK);
+                    }
+                });
+
+                cB_llavesForaneas.Items.Clear();
+
+                FKs.ForEach(fk =>
+                {
+                    cB_llavesForaneas.Items.Add(fk.nombre);
                 });
             }
         }
@@ -520,7 +552,7 @@ namespace SMBD
                     try
                     {
                         var atrib = new Atributo();
-                        Atributo a;
+                        Atributo a = null;
                         atrib.nombre = tB_NombreAtributo.Text;
                         atrib.tipoDato = cB_tipoAtributo.Text;
 
@@ -531,11 +563,31 @@ namespace SMBD
 
                         var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
 
-                        a = t.atributos.Find(x => x.nombre == atrib.nombre);
+                        if (t != null)
+                        {
+                            a = t.atributos.Find(x => x.nombre == atrib.nombre);
+                        }
 
                         if (a == null)
                         {
-                            MessageBox.Show("agregar atributo");
+                            MessageBox.Show("Atributo agregado");
+                            if (cB_llavePrimaria.Checked == true && t.PK == null)
+                            {
+                                t.PK = atrib;
+                            }
+                            else
+                            {
+                                if (cB_llavePrimaria.Checked == true)
+                                {
+                                    MessageBox.Show("Esta tabla ya contiene llave primaria");
+                                }
+                            }
+
+                            if (cB_llaveForanea.Checked == true)
+                            {
+                                t.FK.Add(FKs[cB_llavesForaneas.SelectedIndex]);
+                            }
+
                             t.atributos.Add(atrib);
                             cargaTablaSeleccionada();
                             guardaTablas();
@@ -597,6 +649,11 @@ namespace SMBD
             {
                 tB_tamCadena.Visible = false;
             }
+        }
+
+        private void cB_llavesForaneas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cB_tipoAtributo.SelectedItem = FKs[cB_llavesForaneas.SelectedIndex].tipoDato;
         }
     }
 }

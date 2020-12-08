@@ -301,6 +301,7 @@ namespace SMBD
             this.cB_llavesForaneas.Size = new System.Drawing.Size(100, 21);
             this.cB_llavesForaneas.TabIndex = 14;
             this.cB_llavesForaneas.Visible = false;
+            this.cB_llavesForaneas.SelectedIndexChanged += new System.EventHandler(this.cB_llavesForaneas_SelectedIndexChanged);
             // 
             // btn_agregaArtibuto
             // 
