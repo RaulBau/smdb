@@ -51,6 +51,8 @@ namespace SMBD
             this.tV_ListaTablas = new System.Windows.Forms.TreeView();
             this.nombreTabla = new System.Windows.Forms.Label();
             this.dGV_AtributosTabla = new System.Windows.Forms.DataGridView();
+            this.cMS_atributos = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.renombrarToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tB_NombreAtributo = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -60,9 +62,12 @@ namespace SMBD
             this.cB_llavesForaneas = new System.Windows.Forms.ComboBox();
             this.btn_agregaArtibuto = new System.Windows.Forms.Button();
             this.tB_tamCadena = new System.Windows.Forms.TextBox();
+            this.dGV_nuevoRegistro = new System.Windows.Forms.DataGridView();
             this.menuStrip1.SuspendLayout();
             this.cMS_ListaTablas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dGV_AtributosTabla)).BeginInit();
+            this.cMS_atributos.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dGV_nuevoRegistro)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -95,28 +100,28 @@ namespace SMBD
             // 
             this.abrirToolStripMenuItem.AccessibleName = "Abrir";
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.abrirToolStripMenuItem.Text = "Abrir";
             // 
             // cerrarToolStripMenuItem
             // 
             this.cerrarToolStripMenuItem.AccessibleName = "Cerrar";
             this.cerrarToolStripMenuItem.Name = "cerrarToolStripMenuItem";
-            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.cerrarToolStripMenuItem.Text = "Cerrar";
             // 
             // eliminarToolStripMenuItem
             // 
             this.eliminarToolStripMenuItem.AccessibleName = "Eliminar";
             this.eliminarToolStripMenuItem.Name = "eliminarToolStripMenuItem";
-            this.eliminarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.eliminarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.eliminarToolStripMenuItem.Text = "Eliminar";
             // 
             // nuevaToolStripMenuItem
             // 
             this.nuevaToolStripMenuItem.AccessibleName = "Nueva";
             this.nuevaToolStripMenuItem.Name = "nuevaToolStripMenuItem";
-            this.nuevaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.nuevaToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.nuevaToolStripMenuItem.Text = "Nueva";
             // 
             // renombrarToolStripMenuItem
@@ -125,7 +130,7 @@ namespace SMBD
             this.renombrarToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSTB_NombreBD});
             this.renombrarToolStripMenuItem.Name = "renombrarToolStripMenuItem";
-            this.renombrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.renombrarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.renombrarToolStripMenuItem.Text = "Renombrar";
             // 
             // toolSTB_NombreBD
@@ -228,10 +233,29 @@ namespace SMBD
             this.dGV_AtributosTabla.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dGV_AtributosTabla.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dGV_AtributosTabla.ContextMenuStrip = this.cMS_atributos;
             this.dGV_AtributosTabla.Location = new System.Drawing.Point(169, 60);
             this.dGV_AtributosTabla.Name = "dGV_AtributosTabla";
-            this.dGV_AtributosTabla.Size = new System.Drawing.Size(619, 225);
+            this.dGV_AtributosTabla.Size = new System.Drawing.Size(619, 185);
             this.dGV_AtributosTabla.TabIndex = 6;
+            this.dGV_AtributosTabla.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dGV_AtributosTabla_ColumnHeaderMouseClick);
+            // 
+            // cMS_atributos
+            // 
+            this.cMS_atributos.Enabled = false;
+            this.cMS_atributos.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.renombrarToolStripMenuItem2});
+            this.cMS_atributos.Name = "cMS_atributos";
+            this.cMS_atributos.Size = new System.Drawing.Size(105, 26);
+            this.cMS_atributos.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.cMS_atributos_Closed);
+            // 
+            // renombrarToolStripMenuItem2
+            // 
+            this.renombrarToolStripMenuItem2.AccessibleName = "Editar";
+            this.renombrarToolStripMenuItem2.Enabled = false;
+            this.renombrarToolStripMenuItem2.Name = "renombrarToolStripMenuItem2";
+            this.renombrarToolStripMenuItem2.Size = new System.Drawing.Size(104, 22);
+            this.renombrarToolStripMenuItem2.Text = "Editar";
             // 
             // tB_NombreAtributo
             // 
@@ -321,11 +345,25 @@ namespace SMBD
             this.tB_tamCadena.TabIndex = 16;
             this.tB_tamCadena.Visible = false;
             // 
+            // dGV_nuevoRegistro
+            // 
+            this.dGV_nuevoRegistro.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dGV_nuevoRegistro.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dGV_nuevoRegistro.Location = new System.Drawing.Point(169, 251);
+            this.dGV_nuevoRegistro.Name = "dGV_nuevoRegistro";
+            this.dGV_nuevoRegistro.Size = new System.Drawing.Size(619, 54);
+            this.dGV_nuevoRegistro.TabIndex = 17;
+            this.dGV_nuevoRegistro.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dGV_nuevoRegistro_RowLeave);
+            this.dGV_nuevoRegistro.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dGV_nuevoRegistro_RowValidated);
+            this.dGV_nuevoRegistro.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dGV_nuevoRegistro_KeyPress);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.dGV_nuevoRegistro);
             this.Controls.Add(this.tB_tamCadena);
             this.Controls.Add(this.btn_agregaArtibuto);
             this.Controls.Add(this.cB_llavesForaneas);
@@ -349,6 +387,8 @@ namespace SMBD
             this.menuStrip1.PerformLayout();
             this.cMS_ListaTablas.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dGV_AtributosTabla)).EndInit();
+            this.cMS_atributos.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dGV_nuevoRegistro)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -386,6 +426,9 @@ namespace SMBD
         private System.Windows.Forms.ComboBox cB_llavesForaneas;
         private System.Windows.Forms.Button btn_agregaArtibuto;
         private System.Windows.Forms.TextBox tB_tamCadena;
+        private System.Windows.Forms.ContextMenuStrip cMS_atributos;
+        private System.Windows.Forms.ToolStripMenuItem renombrarToolStripMenuItem2;
+        private System.Windows.Forms.DataGridView dGV_nuevoRegistro;
     }
 }
 

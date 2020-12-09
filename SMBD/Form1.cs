@@ -248,6 +248,7 @@ namespace SMBD
                     tablas.Clear();
                     tV_ListaTablas.Nodes.Clear();
                     dGV_AtributosTabla.Columns.Clear();
+                    dGV_nuevoRegistro.Columns.Clear();
                     break;
                 case "Eliminar":
                     eliminarBase();
@@ -349,6 +350,7 @@ namespace SMBD
             if (t != null)
             {
                 dGV_AtributosTabla.Columns.Clear();
+                dGV_nuevoRegistro.Columns.Clear();
                 var llave = "";
 
                 t.atributos.ForEach(a =>
@@ -365,9 +367,36 @@ namespace SMBD
                     {
                         llave = " FK";
                     }
-
                     dGV_AtributosTabla.Columns.Add(a.nombre, a.nombre + llave);
+                    dGV_AtributosTabla.Columns[dGV_AtributosTabla.Columns.Count - 1].SortMode = DataGridViewColumnSortMode.Programmatic;
+
+                    dGV_nuevoRegistro.Columns.Add(a.nombre, a.nombre + llave);
+                    dGV_nuevoRegistro.Columns[dGV_nuevoRegistro.Columns.Count - 1].SortMode = DataGridViewColumnSortMode.Programmatic;
                 });
+
+                string arch = tablaSeleccionada;
+                string d;
+
+                var lista = new List<Dictionary<string, object>>();
+                using (StreamReader archivo = new StreamReader(arch))
+                {
+                    d = archivo.ReadLine();
+                }
+                if (d != null && d != "")
+                {
+                    lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                }
+
+                dGV_AtributosTabla.Rows.Clear();
+                int n;
+                foreach (var item in lista)
+                {
+                    n = dGV_AtributosTabla.Rows.Add();
+                    for (int i = 0; i < t.atributos.Count; i++)
+                    {
+                        dGV_AtributosTabla.Rows[n].Cells[i].Value = item[t.atributos[i].nombre];
+                    }
+                }
 
                 FKs.Clear();
 
@@ -387,6 +416,8 @@ namespace SMBD
                         cB_llavesForaneas.Items.Add(fk.nombre);
                 });
             }
+
+            dGV_nuevoRegistro.Rows.Clear();
         }
 
         private void tV_ListaTablas_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -591,10 +622,13 @@ namespace SMBD
                                 var at = FKs[cB_llavesForaneas.SelectedIndex];
                                 atrib.tipoDato = at.tipoDato;
                                 atrib.tam = at.tam;
-                                t.FK.Add( atrib);
+                                t.FK.Add(atrib);
                             }
 
                             t.atributos.Add(atrib);
+                            tB_NombreAtributo.Text = "";
+                            cB_tipoAtributo.Text = "";
+                            cB_llavesForaneas.SelectedItem = "";
                             guardaTablas();
                             cargaTablaSeleccionada();
                         }
@@ -640,8 +674,6 @@ namespace SMBD
             }
         }
 
-        #endregion
-
         private void cB_tipoAtributo_SelectedIndexChanged(object sender, EventArgs e)
         {
             Console.WriteLine(cB_tipoAtributo.SelectedItem);
@@ -660,6 +692,112 @@ namespace SMBD
         private void cB_llavesForaneas_SelectedIndexChanged(object sender, EventArgs e)
         {
             cB_tipoAtributo.SelectedItem = FKs[cB_llavesForaneas.SelectedIndex].tipoDato;
+        }
+
+        private void renombraAtributo()
+        {
+
+        }
+
+        private void dGV_AtributosTabla_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    //Form1 f = new Form1();
+                    //f.Show(this);
+                    //Help.ShowPopup(this, " sd ", e.Location);
+                    break;
+                case MouseButtons.Right:
+                    cMS_atributos.Enabled = true;
+                    break;
+            }
+        }
+        #endregion
+
+        private void cMS_atributos_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+            cMS_atributos.Enabled = false;
+        }
+
+        private void dGV_nuevoRegistro_RowValidated(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void guardaDatosTabla(Dictionary<string, object> datos)
+        {
+            string arch = tablaSeleccionada;
+            string d;
+
+            var lista = new List<Dictionary<string, object>>();
+            using (StreamReader archivo = new StreamReader(arch))
+            {
+                d = archivo.ReadLine();
+            }
+            if (d != null && d != "")
+            {
+                lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+            }
+
+            lista.Add(datos);
+
+
+            string s = JsonConvert.SerializeObject(lista);
+            using (StreamWriter archivo = new StreamWriter(arch, false))
+            {
+                archivo.WriteLine(s);
+            }
+        }
+
+        private void cargaRegistro()
+        {
+            var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
+            var renglon = new Dictionary<string, object>();
+
+            try
+            {
+                if (t != null)
+                {
+                    if (dGV_nuevoRegistro.Rows[0] != null)
+                    {
+                        for (int i = 0; i < t.atributos.Count; i++)
+                        {
+                            switch (t.atributos[i].tipoDato)
+                            {
+                                case "Entero":
+                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
+                                    break;
+                                case "Decimal":
+                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
+                                    break;
+                                case "Cadena":
+                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString().PadRight(t.atributos[i].tam));
+                                    break;
+                            }
+                        }
+                        guardaDatosTabla(renglon);
+                    }
+                }
+            }
+            catch (Exception excep)
+            {
+                MessageBox.Show(excep.Message);
+            }
+        }
+
+        private void dGV_nuevoRegistro_RowLeave(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dGV_nuevoRegistro_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\r' || e.KeyChar == '\n')
+            {
+                cargaRegistro();
+                cargaTablaSeleccionada();
+            }
         }
     }
 }
