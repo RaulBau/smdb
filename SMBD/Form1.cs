@@ -15,38 +15,6 @@ namespace SMBD
 {
     public partial class Form1 : Form
     {
-        public class Atributo
-        {
-            public string nombre;
-            public string tipoDato;
-            public int tam;
-
-            public Atributo()
-            {
-                nombre = "";
-                tipoDato = "";
-                tam = 0;
-            }
-        }
-
-        public class Tabla
-        {
-            public string nombre;
-            public Atributo PK;
-            public List<Atributo> FK;
-            public List<Atributo> atributos;
-
-            public Tabla()
-            {
-                nombre = "";
-                PK = null;
-                FK = new List<Atributo>();
-                atributos = new List<Atributo>();
-            }
-        }
-
-
-
         string pathBase;
         string tablaSeleccionada;
         private FolderBrowserDialog folderBD;
@@ -233,6 +201,13 @@ namespace SMBD
                                 {
                                     string j = archivo.ReadLine();
                                     tablas = JsonConvert.DeserializeObject<List<Tabla>>(j);
+                                    tablas.ForEach(t =>
+                                    {
+                                        t.atributos.ForEach(a =>
+                                        {
+                                            Atributo.actualizaId(a.id);
+                                        });
+                                    });
                                 }
                             }
                             catch (Exception excep)
@@ -249,6 +224,7 @@ namespace SMBD
                     tV_ListaTablas.Nodes.Clear();
                     dGV_AtributosTabla.Columns.Clear();
                     dGV_nuevoRegistro.Columns.Clear();
+                    Atributo.reiniciaId();
                     break;
                 case "Eliminar":
                     eliminarBase();
@@ -356,14 +332,12 @@ namespace SMBD
                 t.atributos.ForEach(a =>
                 {
                     llave = "";
-                    if (t.PK != null && a.nombre == t.PK.nombre)
+                    if (a.PK == true)
                     {
                         llave = " PK";
                     }
 
-                    var fk = t.FK.Find(x => x.nombre == a.nombre);
-
-                    if (fk != null)
+                    if (a.FK == true)
                     {
                         llave = " FK";
                     }
@@ -404,7 +378,11 @@ namespace SMBD
                 {
                     if (tab.nombre != t.nombre)
                     {
-                        FKs.Add(tab.PK);
+                        tab.atributos.ForEach(atr =>
+                        {
+                            if (atr.PK)
+                                FKs.Add(atr);
+                        });
                     }
                 });
 
@@ -605,9 +583,9 @@ namespace SMBD
                         if (a == null)
                         {
                             MessageBox.Show("Atributo agregado");
-                            if (cB_llavePrimaria.Checked == true && t.PK == null)
+                            if (cB_llavePrimaria.Checked == true && t.clavePrimaria() == false)
                             {
-                                t.PK = atrib;
+                                atrib.PK = true;
                             }
                             else
                             {
@@ -622,7 +600,8 @@ namespace SMBD
                                 var at = FKs[cB_llavesForaneas.SelectedIndex];
                                 atrib.tipoDato = at.tipoDato;
                                 atrib.tam = at.tam;
-                                t.FK.Add(atrib);
+                                atrib.nombre = at.nombre;
+                                atrib.agregaLlaveForanea(at.id);
                             }
 
                             t.atributos.Add(atrib);
@@ -692,6 +671,11 @@ namespace SMBD
         private void cB_llavesForaneas_SelectedIndexChanged(object sender, EventArgs e)
         {
             cB_tipoAtributo.SelectedItem = FKs[cB_llavesForaneas.SelectedIndex].tipoDato;
+            if (FKs[cB_llavesForaneas.SelectedIndex].tipoDato == "cadena")
+            {
+                tB_tamCadena.Text = FKs[cB_llavesForaneas.SelectedIndex].tam.ToString();
+            }
+            tB_NombreAtributo.Text = FKs[cB_llavesForaneas.SelectedIndex].nombre;
         }
 
         private void renombraAtributo()
@@ -754,29 +738,56 @@ namespace SMBD
         {
             var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
             var renglon = new Dictionary<string, object>();
+            var corr = true;
+            var datos = false;
 
             try
             {
                 if (t != null)
                 {
+
                     if (dGV_nuevoRegistro.Rows[0] != null)
                     {
-                        for (int i = 0; i < t.atributos.Count; i++)
+                        for (int i = 0; i < dGV_nuevoRegistro.Rows[0].Cells.Count; i++)
                         {
-                            switch (t.atributos[i].tipoDato)
+                            if (dGV_nuevoRegistro.Rows[0].Cells[i].Value == null)
                             {
-                                case "Entero":
-                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
-                                    break;
-                                case "Decimal":
-                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
-                                    break;
-                                case "Cadena":
-                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString().PadRight(t.atributos[i].tam));
-                                    break;
+                                corr = false;
                             }
+                            corr = corr && dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString() != "";
                         }
-                        guardaDatosTabla(renglon);
+                        if (corr == true)
+                        {
+                            for (int i = 0; i < t.atributos.Count; i++)
+                            {
+                                datos = datosFK(t.atributos[i].ref_id);
+                                if (datos == true)
+                                {
+                                    switch (t.atributos[i].tipoDato)
+                                    {
+                                        case "Entero":
+                                            renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
+                                            break;
+                                        case "Decimal":
+                                            renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
+                                            break;
+                                        case "Cadena":
+                                            renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString().PadRight(t.atributos[i].tam));
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    throw  new Exception("La llave primaria no contiene datos");
+
+                                }
+                            }
+                            //guardaDatosTabla(renglon);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Llena todos los campos");
+                        }
                     }
                 }
             }
@@ -784,6 +795,30 @@ namespace SMBD
             {
                 MessageBox.Show(excep.Message);
             }
+        }
+
+        private bool datosFK(int id)
+        {
+            var b = false;
+
+            if (id != -1)
+            {
+                b = tablas.Find(t => t.atributos.Find(a => a.id == id && a.datos == true && a.PK == true) != null) != null;
+                //foreach (var t in tablas)
+                //{
+                //    foreach (var a in t.atributos)
+                //    {
+                //        if (a.id == id && a.datos == true)
+                //        {
+                //            b = true;
+                //            break;
+                //        }
+                //    }
+                //    if (b == true) break;
+                //}
+            }
+
+            return b;
         }
 
         private void dGV_nuevoRegistro_RowLeave(object sender, DataGridViewCellEventArgs e)
