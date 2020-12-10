@@ -63,6 +63,8 @@ namespace SMBD
             this.btn_agregaArtibuto = new System.Windows.Forms.Button();
             this.tB_tamCadena = new System.Windows.Forms.TextBox();
             this.dGV_nuevoRegistro = new System.Windows.Forms.DataGridView();
+            this.btn_EliminarAtributo = new System.Windows.Forms.Button();
+            this.btn_eliminarRegistro = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.cMS_ListaTablas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dGV_AtributosTabla)).BeginInit();
@@ -100,28 +102,28 @@ namespace SMBD
             // 
             this.abrirToolStripMenuItem.AccessibleName = "Abrir";
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.abrirToolStripMenuItem.Text = "Abrir";
             // 
             // cerrarToolStripMenuItem
             // 
             this.cerrarToolStripMenuItem.AccessibleName = "Cerrar";
             this.cerrarToolStripMenuItem.Name = "cerrarToolStripMenuItem";
-            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cerrarToolStripMenuItem.Text = "Cerrar";
             // 
             // eliminarToolStripMenuItem
             // 
             this.eliminarToolStripMenuItem.AccessibleName = "Eliminar";
             this.eliminarToolStripMenuItem.Name = "eliminarToolStripMenuItem";
-            this.eliminarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.eliminarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.eliminarToolStripMenuItem.Text = "Eliminar";
             // 
             // nuevaToolStripMenuItem
             // 
             this.nuevaToolStripMenuItem.AccessibleName = "Nueva";
             this.nuevaToolStripMenuItem.Name = "nuevaToolStripMenuItem";
-            this.nuevaToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.nuevaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.nuevaToolStripMenuItem.Text = "Nueva";
             // 
             // renombrarToolStripMenuItem
@@ -130,7 +132,7 @@ namespace SMBD
             this.renombrarToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolSTB_NombreBD});
             this.renombrarToolStripMenuItem.Name = "renombrarToolStripMenuItem";
-            this.renombrarToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.renombrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.renombrarToolStripMenuItem.Text = "Renombrar";
             // 
             // toolSTB_NombreBD
@@ -358,11 +360,33 @@ namespace SMBD
             this.dGV_nuevoRegistro.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dGV_nuevoRegistro_RowValidated);
             this.dGV_nuevoRegistro.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dGV_nuevoRegistro_KeyPress);
             // 
+            // btn_EliminarAtributo
+            // 
+            this.btn_EliminarAtributo.Location = new System.Drawing.Point(229, 309);
+            this.btn_EliminarAtributo.Name = "btn_EliminarAtributo";
+            this.btn_EliminarAtributo.Size = new System.Drawing.Size(105, 23);
+            this.btn_EliminarAtributo.TabIndex = 18;
+            this.btn_EliminarAtributo.Text = "Eliminar Atributo";
+            this.btn_EliminarAtributo.UseVisualStyleBackColor = true;
+            this.btn_EliminarAtributo.Click += new System.EventHandler(this.btn_EliminarAtributo_Click);
+            // 
+            // btn_eliminarRegistro
+            // 
+            this.btn_eliminarRegistro.Location = new System.Drawing.Point(340, 310);
+            this.btn_eliminarRegistro.Name = "btn_eliminarRegistro";
+            this.btn_eliminarRegistro.Size = new System.Drawing.Size(105, 23);
+            this.btn_eliminarRegistro.TabIndex = 19;
+            this.btn_eliminarRegistro.Text = "Eliminar Registro";
+            this.btn_eliminarRegistro.UseVisualStyleBackColor = true;
+            this.btn_eliminarRegistro.Click += new System.EventHandler(this.btn_eliminarRegistro_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btn_eliminarRegistro);
+            this.Controls.Add(this.btn_EliminarAtributo);
             this.Controls.Add(this.dGV_nuevoRegistro);
             this.Controls.Add(this.tB_tamCadena);
             this.Controls.Add(this.btn_agregaArtibuto);
@@ -429,6 +453,8 @@ namespace SMBD
         private System.Windows.Forms.ContextMenuStrip cMS_atributos;
         private System.Windows.Forms.ToolStripMenuItem renombrarToolStripMenuItem2;
         private System.Windows.Forms.DataGridView dGV_nuevoRegistro;
+        private System.Windows.Forms.Button btn_EliminarAtributo;
+        private System.Windows.Forms.Button btn_eliminarRegistro;
     }
 }
 

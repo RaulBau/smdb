@@ -336,7 +336,7 @@ namespace SMBD
                     {
                         llave = " PK";
                     }
-
+                    else
                     if (a.FK == true)
                     {
                         llave = " FK";
@@ -739,7 +739,7 @@ namespace SMBD
             var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
             var renglon = new Dictionary<string, object>();
             var corr = true;
-            var datos = false;
+            var datos = true;
 
             try
             {
@@ -760,9 +760,23 @@ namespace SMBD
                         {
                             for (int i = 0; i < t.atributos.Count; i++)
                             {
-                                datos = datosFK(t.atributos[i].ref_id);
-                                if (datos == true)
+                                if (t.atributos[i].FK == true)
+                                    datos = datos & datosFK(t.atributos[i].ref_id);
+                            }
+                            if (datos == true)
+                            {
+                                for (int i = 0; i < t.atributos.Count; i++)
                                 {
+                                    if (t.atributos[i].FK == true && existePK(obtenTablaAtributo(t.atributos[i].ref_id), dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), t.atributos[i].nombre) == false)
+                                    {
+                                        throw new Exception("La llave foranea no existe");
+                                    }
+
+                                    if (t.atributos[i].PK == true && existePK(t.nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), t.atributos[i].nombre) == true)
+                                    {
+                                        throw new Exception("Llave primaria repetida");
+                                    }
+
                                     switch (t.atributos[i].tipoDato)
                                     {
                                         case "Entero":
@@ -775,14 +789,18 @@ namespace SMBD
                                             renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString().PadRight(t.atributos[i].tam));
                                             break;
                                     }
-                                }
-                                else
-                                {
-                                    throw  new Exception("La llave primaria no contiene datos");
-
+                                    t.atributos[i].datos = true;
                                 }
                             }
-                            //guardaDatosTabla(renglon);
+                            else
+                            {
+                                throw new Exception("La llave primaria no contiene datos");
+                            }
+                            if (datos == true)
+                            {
+                                guardaDatosTabla(renglon);
+                                guardaTablas();
+                            }
                         }
                         else
                         {
@@ -804,20 +822,55 @@ namespace SMBD
             if (id != -1)
             {
                 b = tablas.Find(t => t.atributos.Find(a => a.id == id && a.datos == true && a.PK == true) != null) != null;
-                //foreach (var t in tablas)
-                //{
-                //    foreach (var a in t.atributos)
-                //    {
-                //        if (a.id == id && a.datos == true)
-                //        {
-                //            b = true;
-                //            break;
-                //        }
-                //    }
-                //    if (b == true) break;
-                //}
             }
 
+            return b;
+        }
+
+        private string obtenTablaAtributo(int id)
+        {
+            string s = "";
+
+            var tab = tablas.Find(t => t.atributos.Find(a => a.id == id && a.datos == true && a.PK == true) != null);
+
+            s = tab != null ? tab.nombre : "";
+
+            return s;
+        }
+
+        private bool existePK(string tabla, string pk, string nomAtrib)
+        {
+            var b = false;
+
+            var lista = new List<Dictionary<string, object>>();
+            string d = "";
+
+            try
+            {
+                var arch = this.pathBase + Path.DirectorySeparatorChar + tabla;
+                using (StreamReader archivo = new StreamReader(arch))
+                {
+                    d = archivo.ReadLine();
+                }
+
+                if (d != null && d != "")
+                {
+                    lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                }
+
+                foreach (var item in lista)
+                {
+                    if (item[nomAtrib].ToString() == pk)
+                    {
+                        b = true;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             return b;
         }
 
@@ -833,6 +886,83 @@ namespace SMBD
                 cargaRegistro();
                 cargaTablaSeleccionada();
             }
+        }
+
+        private bool contieneDatos(string tabla, string nomAtributo)
+        {
+            var b = false;
+            var lista = new List<Dictionary<string, object>>();
+            string d = "";
+
+            try
+            {
+                var arch = this.pathBase + Path.DirectorySeparatorChar + tabla;
+                using (StreamReader archivo = new StreamReader(arch))
+                {
+                    d = archivo.ReadLine();
+                }
+
+                if (d != null && d != "")
+                {
+                    lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                }
+
+                object dato;
+                foreach (var item in lista)
+                {
+                    b = item.TryGetValue(nomAtributo, out dato);
+                    if (b == true)
+                    {
+
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            return b;
+        }
+
+        private void btn_EliminarAtributo_Click(object sender, EventArgs e)
+        {
+            var ind = dGV_AtributosTabla.CurrentCell.ColumnIndex;
+
+            try
+            {
+                var vacio = !contieneDatos(Path.GetFileName(tablaSeleccionada), dGV_AtributosTabla.Columns[ind].Name);
+
+                if (vacio == false)
+                    throw new Exception("Este atributo contiene datos");
+
+                var tab = tablas.Find(t => t.atributos.Find(atr => atr.nombre == dGV_AtributosTabla.Columns[ind].Name) != null);
+                if (tab != null)
+                {
+                    var atr = tab.atributos.Find(a => a.nombre == dGV_AtributosTabla.Columns[ind].Name);
+
+                    if (atr.PK == true)
+                    {
+                        for (int i = 0; i < tablas.Count; i++)
+                        {
+                            tablas[i].atributos = tablas[i].atributos.FindAll(a => a.id != atr.id && a.ref_id != atr.id);
+                        }
+                        guardaTablas();
+                    }
+                }
+            }
+            catch (Exception excep)
+            {
+                MessageBox.Show(excep.Message);
+            }
+
+
+        }
+
+        private void btn_eliminarRegistro_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
