@@ -395,6 +395,7 @@ namespace SMBD
                 });
             }
 
+            dGV_AtributosTabla.ClearSelection();
             dGV_nuevoRegistro.Rows.Clear();
         }
 
@@ -740,6 +741,7 @@ namespace SMBD
             var renglon = new Dictionary<string, object>();
             var corr = true;
             var datos = true;
+            var debil = true;
 
             try
             {
@@ -760,6 +762,7 @@ namespace SMBD
                         {
                             for (int i = 0; i < t.atributos.Count; i++)
                             {
+                                debil = debil & t.atributos[i].FK;
                                 if (t.atributos[i].FK == true)
                                     datos = datos & datosFK(t.atributos[i].ref_id);
                             }
@@ -813,6 +816,11 @@ namespace SMBD
             {
                 MessageBox.Show(excep.Message);
             }
+        }
+
+        private void actualizaPK(int id, object pk)
+        {
+
         }
 
         private bool datosFK(int id)
