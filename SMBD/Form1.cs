@@ -468,7 +468,6 @@ namespace SMBD
             }
         }
 
-
         private void saveFDTabla_FileOk(object sender, CancelEventArgs e)
         {
             File.CreateText(saveFDTabla.FileName);
@@ -727,7 +726,6 @@ namespace SMBD
 
             lista.Add(datos);
 
-
             string s = JsonConvert.SerializeObject(lista);
             using (StreamWriter archivo = new StreamWriter(arch, false))
             {
@@ -742,12 +740,51 @@ namespace SMBD
             var corr = true;
             var datos = true;
             var debil = true;
+            var rep = true;
 
             try
             {
                 if (t != null)
                 {
+                    if (dGV_AtributosTabla.SelectedRows.Count == 1)
+                    {
+                        for (int i = 0; i < t.atributos.Count; i++)
+                        {
+                            switch (t.atributos[i].tipoDato)
+                            {
+                                case "Entero":
+                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
+                                    break;
+                                case "Decimal":
+                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
+                                    break;
+                                case "Cadena":
+                                    renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString().PadRight(t.atributos[i].tam));
+                                    break;
+                            }
 
+                            if (t.atributos[i].FK == true)
+                                datos = datos & datosFK(t.atributos[i].ref_id);
+
+                            //revisamos si existe una llave fforanea
+                            if (t.atributos[i].FK == true && existePK(obtenTablaAtributo(t.atributos[i].ref_id), dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), t.atributos[i].nombre) == false)
+                            {
+                                throw new Exception("La llave foranea no existe");
+                            }
+
+                            //Revisamos si la llave primaria esta repetida
+                            if (t.atributos[i].PK == true && existePK(t.nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), t.atributos[i].nombre) == true)
+                            {
+                                throw new Exception("Llave primaria repetida");
+                            }
+                        }
+
+                        if (datos == true)
+                        {
+                            actualizaRegistro(renglon, dGV_AtributosTabla.Rows.IndexOf( dGV_AtributosTabla.SelectedRows[0]));
+                        }
+                    }
+                    else
                     if (dGV_nuevoRegistro.Rows[0] != null)
                     {
                         for (int i = 0; i < dGV_nuevoRegistro.Rows[0].Cells.Count; i++)
@@ -762,19 +799,24 @@ namespace SMBD
                         {
                             for (int i = 0; i < t.atributos.Count; i++)
                             {
-                                debil = debil & t.atributos[i].FK;
+                                debil = debil && t.atributos[i].FK;
                                 if (t.atributos[i].FK == true)
                                     datos = datos & datosFK(t.atributos[i].ref_id);
                             }
+
                             if (datos == true)
                             {
+
+
                                 for (int i = 0; i < t.atributos.Count; i++)
                                 {
+                                    //revisamos si existe una llave fforanea
                                     if (t.atributos[i].FK == true && existePK(obtenTablaAtributo(t.atributos[i].ref_id), dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), t.atributos[i].nombre) == false)
                                     {
                                         throw new Exception("La llave foranea no existe");
                                     }
 
+                                    //Revisamos si la llave primaria esta repetida
                                     if (t.atributos[i].PK == true && existePK(t.nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), t.atributos[i].nombre) == true)
                                     {
                                         throw new Exception("Llave primaria repetida");
@@ -793,6 +835,26 @@ namespace SMBD
                                             break;
                                     }
                                     t.atributos[i].datos = true;
+                                }
+
+                                //Se verifica si es una relacion debil
+                                if (debil == true)
+                                {
+                                    var iguales = true;
+
+                                    for (int j = 0; j < dGV_AtributosTabla.Rows.Count - 1; j++)
+                                    {
+                                        iguales = true;
+                                        //Verificamos si los datos están repetidos
+                                        for (int i = 0; i < t.atributos.Count; i++)
+                                        {
+                                            iguales = iguales && renglon[t.atributos[i].nombre].ToString() == dGV_AtributosTabla.Rows[j].Cells[i].Value.ToString();
+                                        }
+
+                                        //Si hay datos repetidos lanza la excepcion
+                                        if (iguales == true && t.atributos.Count > 0) throw new Exception("Registro duplicado");
+                                    }
+
                                 }
                             }
                             else
@@ -821,6 +883,66 @@ namespace SMBD
         private void actualizaPK(int id, object pk)
         {
 
+        }
+
+        private void actualizaRegistro(Dictionary<string, object> reg, int numReg)
+        {
+            var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
+
+            var lista = new List<Dictionary<string, object>>();
+            string d = "";
+            if (t != null)
+            {
+
+                try
+                {
+                    var arch = this.tablaSeleccionada;
+                    using (StreamReader archivo = new StreamReader(arch))
+                    {
+                        d = archivo.ReadLine();
+                    }
+
+                    if (d != null && d != "")
+                    {
+                        lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                    }
+
+                    if (lista[numReg] != null)
+                    {
+                        lista[numReg] = reg;
+
+                        string s = JsonConvert.SerializeObject(lista);
+                        using (StreamWriter archivo = new StreamWriter(arch, false))
+                        {
+                            archivo.WriteLine(s);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void modificaRegistro()
+        {
+            var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
+
+            for (int i = 0; i < t.atributos.Count; i++)
+            {
+                //revisamos si existe una llave fforanea
+                if (t.atributos[i].FK == true && existePK(obtenTablaAtributo(t.atributos[i].ref_id), dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), t.atributos[i].nombre) == false)
+                {
+                    throw new Exception("La llave foranea no existe");
+                }
+
+                //Revisamos si la llave primaria esta repetida
+                if (t.atributos[i].PK == true && existePK(t.nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), t.atributos[i].nombre) == true)
+                {
+                    throw new Exception("Llave primaria repetida");
+                }
+            }
         }
 
         private bool datosFK(int id)
