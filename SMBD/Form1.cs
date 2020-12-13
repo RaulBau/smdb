@@ -689,18 +689,36 @@ namespace SMBD
 
         private void renombraAtributo(Tabla t, string vN, string nN, int id, int numAtrib)
         {
+            string arch = "";
+            string d;
+
+            dGV_AtributosTabla.Columns[numAtrib].Name = nN;
+
+            var lista = new List<Dictionary<string, object>>();
+            object o;
             if (id == -1)
             {
                 t.atributos[numAtrib].nombre = nN;
+                arch = this.pathBase + Path.DirectorySeparatorChar + t.nombre;
+                Console.WriteLine();
+                using (StreamReader archivo = new StreamReader(arch))
+                {
+                    d = archivo.ReadLine();
+                }
+                if (d != null && d != "")
+                {
+                    lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                }
+                lista = cambiaNombreAtributoRegistro(t, nN, id, lista);
+                guardaTabla(arch, lista);
                 guardaTablas();
                 cargaTablaSeleccionada();
             }
             else
             {
-                string arch = "";
-                string d;
 
-                var lista = new List<Dictionary<string, object>>();
+                Atributo atr = null;
+
                 for (int i = 0; i < tablas.Count; i++)
                 {
                     arch = this.pathBase + Path.DirectorySeparatorChar + tablas[i].nombre;
@@ -713,14 +731,54 @@ namespace SMBD
                     {
                         lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
                     }
-                    for (int j = 0; j < lista.Count; j++)
-                    {
 
+                    lista = cambiaNombreAtributoRegistro(tablas[i], nN, id, lista);
+                    guardaTabla(arch, lista);
+
+                }
+                for (int i = 0; i < tablas.Count; i++)
+                {
+                    for (int j = 0; j < tablas[i].atributos.Count; j++)
+                    {
+                        var atrib = tablas[i].atributos[j];
+                        if (atrib.id == id || atrib.ref_id == id)
+                        {
+                            atrib.nombre = nN;
+                        }
                     }
                 }
             }
-            //guardaTablas();
-            //cargaTablaSeleccionada();
+            guardaTablas();
+            cargaTablaSeleccionada();
+        }
+
+        private List<Dictionary<string, object>> cambiaNombreAtributoRegistro(Tabla t, string nN, int id, List<Dictionary<string, object>> lista)
+        {
+            Atributo atr = null;
+            object o;
+            do
+            {
+                atr = t.atributos.Find(a => a.id == id || a.ref_id == id);
+                if (atr != null)
+                {
+                    for (int j = 0; j < lista.Count; j++)
+                    {
+                        lista[j].Add(nN, lista[j][atr.nombre]);
+                        lista[j].Remove(atr.nombre);
+                    }
+                }
+            } while (atr != null && lista.Find(a => a.TryGetValue(atr.nombre, out o)) != null);
+
+            return lista;
+        }
+
+        private void guardaTabla(string tabla, List<Dictionary<string, object>> lista)
+        {
+            string s = JsonConvert.SerializeObject(lista);
+            using (StreamWriter archivo = new StreamWriter(tabla, false))
+            {
+                archivo.WriteLine(s);
+            }
         }
 
         private void btn_modoficarAtributo_Click(object sender, EventArgs e)
