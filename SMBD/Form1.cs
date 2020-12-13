@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace SMBD
 {
@@ -568,9 +569,17 @@ namespace SMBD
                         atrib.nombre = tB_NombreAtributo.Text;
                         atrib.tipoDato = cB_tipoAtributo.Text;
 
-                        if (atrib.tipoDato == "Cadena")
+                        switch (atrib.tipoDato)
                         {
-                            atrib.tam = int.Parse(tB_tamCadena.Text);
+                            case "Entero":
+                                atrib.tam = 4;
+                                break;
+                            case "Cadena":
+                                atrib.tam = int.Parse(tB_tamCadena.Text);
+                                break;
+                            case "Decimal":
+                                atrib.tam = 8;
+                                break;
                         }
 
                         var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
@@ -678,9 +687,121 @@ namespace SMBD
             tB_NombreAtributo.Text = FKs[cB_llavesForaneas.SelectedIndex].nombre;
         }
 
-        private void renombraAtributo()
+        private void renombraAtributo(Tabla t, string vN, string nN, int id, int numAtrib)
         {
+            if (id == -1)
+            {
+                t.atributos[numAtrib].nombre = nN;
+                guardaTablas();
+                cargaTablaSeleccionada();
+            }
+            else
+            {
+                string arch = "";
+                string d;
 
+                var lista = new List<Dictionary<string, object>>();
+                for (int i = 0; i < tablas.Count; i++)
+                {
+                    arch = this.pathBase + Path.DirectorySeparatorChar + tablas[i].nombre;
+                    Console.WriteLine();
+                    using (StreamReader archivo = new StreamReader(arch))
+                    {
+                        d = archivo.ReadLine();
+                    }
+                    if (d != null && d != "")
+                    {
+                        lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                    }
+                    for (int j = 0; j < lista.Count; j++)
+                    {
+
+                    }
+                }
+            }
+            //guardaTablas();
+            //cargaTablaSeleccionada();
+        }
+
+        private void btn_modoficarAtributo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int i = -1;
+                if (dGV_AtributosTabla.CurrentCell != null)
+                    i = dGV_AtributosTabla.CurrentCell.ColumnIndex;
+                var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
+                if (t != null)
+                {
+                    var atrib = t.atributos[i];
+                    if (tB_NombreAtributo.Text != atrib.nombre)
+                    {
+                        if (tB_NombreAtributo.Text == "")
+                            throw new Exception("Escribe un nombre");
+
+                        renombraAtributo(t, atrib.nombre, tB_NombreAtributo.Text, atrib.PK == true ? atrib.id : atrib.ref_id, i);
+                    }
+                }
+            }
+            catch (Exception excep)
+            {
+                MessageBox.Show(excep.Message);
+            }
+        }
+
+        private void dGV_AtributosTabla_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            switch (cB_renombrarAtributo.Checked)
+            {
+                case true:
+                    try
+                    {
+                        int i = -1;
+                        if (dGV_AtributosTabla.CurrentCell != null)
+                            i = dGV_AtributosTabla.CurrentCell.ColumnIndex;
+                        var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
+                        if (t != null)
+                        {
+                            var atrib = t.atributos[i];
+                            tB_NombreAtributo.Text = atrib.nombre;
+                            cB_tipoAtributo.Text = atrib.tipoDato;
+                            cB_llavesForaneas.SelectedIndex = 0;
+                            tB_tamCadena.Text = atrib.tam.ToString();
+                            cB_llavePrimaria.Checked = atrib.PK;
+                            cB_llaveForanea.Checked = atrib.FK;
+                            cB_llavesForaneas.Visible = atrib.FK;
+                            MessageBox.Show(atrib.ref_id.ToString());
+                        }
+                    }
+                    catch (Exception excep)
+                    {
+                        MessageBox.Show(excep.Message);
+                    }
+                    break;
+                case false:
+                    break;
+            }
+        }
+
+
+        private void cB_renombrarAtributo_Click(object sender, EventArgs e)
+        {
+            switch (cB_renombrarAtributo.Checked)
+            {
+                case true:
+
+                    break;
+                case false:
+                    tB_NombreAtributo.Text = "";
+                    cB_tipoAtributo.Text = "";
+                    cB_llavesForaneas.SelectedItem = "";
+                    tB_tamCadena.Text = "";
+                    tB_tamCadena.Visible = false;
+                    cB_llavePrimaria.Checked = false;
+                    cB_llaveForanea.Checked = false;
+                    cB_llavesForaneas.Visible = false;
+                    break;
+            }
         }
 
         private void dGV_AtributosTabla_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -688,9 +809,6 @@ namespace SMBD
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    //Form1 f = new Form1();
-                    //f.Show(this);
-                    //Help.ShowPopup(this, " sd ", e.Location);
                     break;
                 case MouseButtons.Right:
                     cMS_atributos.Enabled = true;
@@ -753,9 +871,17 @@ namespace SMBD
                             switch (t.atributos[i].tipoDato)
                             {
                                 case "Entero":
+                                    if (!Regex.IsMatch(dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), "^[1-9][0-9]*$"))
+                                    {
+                                        throw new Exception("El tipo de dato de " + t.atributos[i].nombre + " no es entero");
+                                    }
                                     renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
                                     break;
                                 case "Decimal":
+                                    if (!Regex.IsMatch(dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), "^-?[0-9]+(?:.[0-9]+)?$"))
+                                    {
+                                        throw new Exception("El tipo de dato de " + t.atributos[i].nombre + " no es decimal");
+                                    }
                                     renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
                                     break;
                                 case "Cadena":
@@ -781,7 +907,7 @@ namespace SMBD
 
                         if (datos == true)
                         {
-                            actualizaRegistro(renglon, dGV_AtributosTabla.Rows.IndexOf( dGV_AtributosTabla.SelectedRows[0]));
+                            actualizaRegistro(renglon, dGV_AtributosTabla.Rows.IndexOf(dGV_AtributosTabla.SelectedRows[0]));
                         }
                     }
                     else
@@ -825,9 +951,17 @@ namespace SMBD
                                     switch (t.atributos[i].tipoDato)
                                     {
                                         case "Entero":
+                                            if (!Regex.IsMatch(dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), "^[1-9][0-9]*$"))
+                                            {
+                                                throw new Exception("El tipo de dato de " + t.atributos[i].nombre + " no es entero");
+                                            }
                                             renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
                                             break;
                                         case "Decimal":
+                                            if (!Regex.IsMatch(dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), "^-?[0-9]+(?:.[0-9]+)?$"))
+                                            {
+                                                throw new Exception("El tipo de dato de " + t.atributos[i].nombre + " no es decimal");
+                                            }
                                             renglon.Add(t.atributos[i].nombre, dGV_nuevoRegistro.Rows[0].Cells[i].Value);
                                             break;
                                         case "Cadena":
@@ -1094,5 +1228,18 @@ namespace SMBD
         {
 
         }
+
+        #region Consultas
+        private void consultasToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            switch (e.ClickedItem.AccessibleName)
+            {
+                case "Nueva":
+                    var fSQL = new fSQL(this.pathBase);
+                    fSQL.Show();
+                    break;
+            }
+        }
+        #endregion
     }
 }
