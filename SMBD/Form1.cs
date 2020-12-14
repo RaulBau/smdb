@@ -791,6 +791,7 @@ namespace SMBD
                 if (dGV_AtributosTabla.CurrentCell != null)
                     i = dGV_AtributosTabla.CurrentCell.ColumnIndex;
                 var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
+
                 if (t != null)
                 {
                     var atrib = t.atributos[i];
