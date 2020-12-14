@@ -40,6 +40,8 @@ namespace SMBD
             this.toolSTB_NombreBD = new System.Windows.Forms.ToolStripTextBox();
             this.tablasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nuevaToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.consultasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nuevaToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFD1 = new System.Windows.Forms.SaveFileDialog();
             this.openFD1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFDTabla = new System.Windows.Forms.SaveFileDialog();
@@ -65,8 +67,6 @@ namespace SMBD
             this.dGV_nuevoRegistro = new System.Windows.Forms.DataGridView();
             this.btn_EliminarAtributo = new System.Windows.Forms.Button();
             this.btn_eliminarRegistro = new System.Windows.Forms.Button();
-            this.consultasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nuevaToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_modoficarAtributo = new System.Windows.Forms.Button();
             this.cB_renombrarAtributo = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
@@ -160,8 +160,24 @@ namespace SMBD
             // 
             this.nuevaToolStripMenuItem1.AccessibleName = "Nueva";
             this.nuevaToolStripMenuItem1.Name = "nuevaToolStripMenuItem1";
-            this.nuevaToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.nuevaToolStripMenuItem1.Size = new System.Drawing.Size(108, 22);
             this.nuevaToolStripMenuItem1.Text = "Nueva";
+            // 
+            // consultasToolStripMenuItem
+            // 
+            this.consultasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.nuevaToolStripMenuItem3});
+            this.consultasToolStripMenuItem.Name = "consultasToolStripMenuItem";
+            this.consultasToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
+            this.consultasToolStripMenuItem.Text = "Consultas";
+            this.consultasToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.consultasToolStripMenuItem_DropDownItemClicked);
+            // 
+            // nuevaToolStripMenuItem3
+            // 
+            this.nuevaToolStripMenuItem3.AccessibleName = "Nueva";
+            this.nuevaToolStripMenuItem3.Name = "nuevaToolStripMenuItem3";
+            this.nuevaToolStripMenuItem3.Size = new System.Drawing.Size(108, 22);
+            this.nuevaToolStripMenuItem3.Text = "Nueva";
             // 
             // saveFD1
             // 
@@ -337,7 +353,7 @@ namespace SMBD
             // 
             // btn_agregaArtibuto
             // 
-            this.btn_agregaArtibuto.Location = new System.Drawing.Point(88, 415);
+            this.btn_agregaArtibuto.Location = new System.Drawing.Point(90, 412);
             this.btn_agregaArtibuto.Name = "btn_agregaArtibuto";
             this.btn_agregaArtibuto.Size = new System.Drawing.Size(75, 23);
             this.btn_agregaArtibuto.TabIndex = 15;
@@ -386,22 +402,6 @@ namespace SMBD
             this.btn_eliminarRegistro.UseVisualStyleBackColor = true;
             this.btn_eliminarRegistro.Click += new System.EventHandler(this.btn_eliminarRegistro_Click);
             // 
-            // consultasToolStripMenuItem
-            // 
-            this.consultasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.nuevaToolStripMenuItem3});
-            this.consultasToolStripMenuItem.Name = "consultasToolStripMenuItem";
-            this.consultasToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
-            this.consultasToolStripMenuItem.Text = "Consultas";
-            this.consultasToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.consultasToolStripMenuItem_DropDownItemClicked);
-            // 
-            // nuevaToolStripMenuItem3
-            // 
-            this.nuevaToolStripMenuItem3.AccessibleName = "Nueva";
-            this.nuevaToolStripMenuItem3.Name = "nuevaToolStripMenuItem3";
-            this.nuevaToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
-            this.nuevaToolStripMenuItem3.Text = "Nueva";
-            // 
             // btn_modoficarAtributo
             // 
             this.btn_modoficarAtributo.Location = new System.Drawing.Point(229, 339);
@@ -427,7 +427,7 @@ namespace SMBD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(838, 450);
+            this.ClientSize = new System.Drawing.Size(838, 441);
             this.Controls.Add(this.cB_renombrarAtributo);
             this.Controls.Add(this.btn_modoficarAtributo);
             this.Controls.Add(this.btn_eliminarRegistro);
@@ -448,7 +448,7 @@ namespace SMBD
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(179, 489);
+            this.MinimumSize = new System.Drawing.Size(179, 480);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
