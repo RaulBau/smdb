@@ -699,7 +699,6 @@ namespace SMBD
             if (id == -1)
             {
                 arch = this.pathBase + Path.DirectorySeparatorChar + t.nombre;
-                Console.WriteLine();
                 using (StreamReader archivo = new StreamReader(arch))
                 {
                     d = archivo.ReadLine();
@@ -716,13 +715,12 @@ namespace SMBD
             }
             else
             {
-
                 Atributo atr = null;
 
                 for (int i = 0; i < tablas.Count; i++)
                 {
                     arch = this.pathBase + Path.DirectorySeparatorChar + tablas[i].nombre;
-                    Console.WriteLine();
+                    
                     using (StreamReader archivo = new StreamReader(arch))
                     {
                         d = archivo.ReadLine();
@@ -1280,8 +1278,6 @@ namespace SMBD
             {
                 MessageBox.Show(excep.Message);
             }
-
-
         }
 
         private void btn_eliminarRegistro_Click(object sender, EventArgs e)

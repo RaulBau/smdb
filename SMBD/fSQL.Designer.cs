@@ -32,6 +32,7 @@ namespace SMBD
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.btn_Ejecutar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -48,6 +49,7 @@ namespace SMBD
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.btn_Ejecutar);
             this.splitContainer1.Panel1.Controls.Add(this.richTextBox1);
             // 
             // splitContainer1.Panel2
@@ -62,9 +64,9 @@ namespace SMBD
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.Location = new System.Drawing.Point(12, 32);
+            this.richTextBox1.Location = new System.Drawing.Point(12, 48);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(814, 192);
+            this.richTextBox1.Size = new System.Drawing.Size(814, 176);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
@@ -78,6 +80,16 @@ namespace SMBD
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(814, 195);
             this.dataGridView1.TabIndex = 0;
+            // 
+            // btn_Ejecutar
+            // 
+            this.btn_Ejecutar.Location = new System.Drawing.Point(12, 13);
+            this.btn_Ejecutar.Name = "btn_Ejecutar";
+            this.btn_Ejecutar.Size = new System.Drawing.Size(75, 23);
+            this.btn_Ejecutar.TabIndex = 1;
+            this.btn_Ejecutar.Text = "Ejecutar";
+            this.btn_Ejecutar.UseVisualStyleBackColor = true;
+            this.btn_Ejecutar.Click += new System.EventHandler(this.btn_Ejecutar_Click);
             // 
             // fSQL
             // 
@@ -102,5 +114,6 @@ namespace SMBD
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button btn_Ejecutar;
     }
 }

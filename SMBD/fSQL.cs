@@ -13,6 +13,8 @@ namespace SMBD
     public partial class fSQL : Form
     {
         public string pathBase;
+        public List<Dictionary<string, object>> baseDatos;
+
         public fSQL(string pb)
         {
             this.pathBase = pb;
@@ -22,6 +24,11 @@ namespace SMBD
         private void fSQL_Load(object sender, EventArgs e)
         {
             Console.WriteLine(this.pathBase);
+        }
+
+        private void btn_Ejecutar_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
