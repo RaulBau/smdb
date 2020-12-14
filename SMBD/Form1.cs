@@ -698,7 +698,6 @@ namespace SMBD
             object o;
             if (id == -1)
             {
-                t.atributos[numAtrib].nombre = nN;
                 arch = this.pathBase + Path.DirectorySeparatorChar + t.nombre;
                 Console.WriteLine();
                 using (StreamReader archivo = new StreamReader(arch))
@@ -709,8 +708,9 @@ namespace SMBD
                 {
                     lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
                 }
-                lista = cambiaNombreAtributoRegistro(t, nN, id, lista);
+                lista = cambiaNombreAtributoRegistro(t, nN, numAtrib, lista, false);
                 guardaTabla(arch, lista);
+                t.atributos[numAtrib].nombre = nN;
                 guardaTablas();
                 cargaTablaSeleccionada();
             }
@@ -732,7 +732,7 @@ namespace SMBD
                         lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
                     }
 
-                    lista = cambiaNombreAtributoRegistro(tablas[i], nN, id, lista);
+                    lista = cambiaNombreAtributoRegistro(tablas[i], nN, id, lista, true);
                     guardaTabla(arch, lista);
 
                 }
@@ -748,17 +748,19 @@ namespace SMBD
                     }
                 }
             }
+            t.atributos[numAtrib].nombre = nN;
             guardaTablas();
             cargaTablaSeleccionada();
         }
 
-        private List<Dictionary<string, object>> cambiaNombreAtributoRegistro(Tabla t, string nN, int id, List<Dictionary<string, object>> lista)
+        private List<Dictionary<string, object>> cambiaNombreAtributoRegistro(Tabla t, string nN, int id, List<Dictionary<string, object>> lista, bool cascada)
         {
             Atributo atr = null;
             object o;
             do
             {
-                atr = t.atributos.Find(a => a.id == id || a.ref_id == id);
+
+                atr = cascada == true ? t.atributos.Find(a => a.id == id || a.ref_id == id) : t.atributos[id];
                 if (atr != null)
                 {
                     for (int j = 0; j < lista.Count; j++)
@@ -828,7 +830,6 @@ namespace SMBD
                             cB_llavePrimaria.Checked = atrib.PK;
                             cB_llaveForanea.Checked = atrib.FK;
                             cB_llavesForaneas.Visible = atrib.FK;
-                            MessageBox.Show(atrib.ref_id.ToString());
                         }
                     }
                     catch (Exception excep)
