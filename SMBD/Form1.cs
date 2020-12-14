@@ -695,7 +695,6 @@ namespace SMBD
             dGV_AtributosTabla.Columns[numAtrib].Name = nN;
 
             var lista = new List<Dictionary<string, object>>();
-            object o;
             if (id == -1)
             {
                 arch = this.pathBase + Path.DirectorySeparatorChar + t.nombre;
@@ -715,12 +714,10 @@ namespace SMBD
             }
             else
             {
-                Atributo atr = null;
-
                 for (int i = 0; i < tablas.Count; i++)
                 {
                     arch = this.pathBase + Path.DirectorySeparatorChar + tablas[i].nombre;
-                    
+
                     using (StreamReader archivo = new StreamReader(arch))
                     {
                         d = archivo.ReadLine();
@@ -916,7 +913,6 @@ namespace SMBD
             var corr = true;
             var datos = true;
             var debil = true;
-            var rep = true;
 
             try
             {
@@ -1291,7 +1287,7 @@ namespace SMBD
             switch (e.ClickedItem.AccessibleName)
             {
                 case "Nueva":
-                    var fSQL = new fSQL(this.pathBase);
+                    var fSQL = new fSQL(this.pathBase, tablas);
                     fSQL.Show();
                     break;
             }
