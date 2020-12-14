@@ -30,11 +30,11 @@ namespace SMBD
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.tB_Compilacion = new System.Windows.Forms.TextBox();
+            this.tB_Salida = new System.Windows.Forms.TextBox();
             this.btn_Ejecutar = new System.Windows.Forms.Button();
             this.rTB_Sentencias = new System.Windows.Forms.RichTextBox();
             this.dGV_Registros = new System.Windows.Forms.DataGridView();
-            this.tB_Salida = new System.Windows.Forms.TextBox();
-            this.tB_Compilacion = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -62,6 +62,21 @@ namespace SMBD
             this.splitContainer1.Size = new System.Drawing.Size(838, 441);
             this.splitContainer1.SplitterDistance = 227;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // tB_Compilacion
+            // 
+            this.tB_Compilacion.Location = new System.Drawing.Point(367, 16);
+            this.tB_Compilacion.Name = "tB_Compilacion";
+            this.tB_Compilacion.Size = new System.Drawing.Size(100, 20);
+            this.tB_Compilacion.TabIndex = 3;
+            this.tB_Compilacion.Visible = false;
+            // 
+            // tB_Salida
+            // 
+            this.tB_Salida.Location = new System.Drawing.Point(104, 16);
+            this.tB_Salida.Name = "tB_Salida";
+            this.tB_Salida.Size = new System.Drawing.Size(257, 20);
+            this.tB_Salida.TabIndex = 2;
             // 
             // btn_Ejecutar
             // 
@@ -95,20 +110,6 @@ namespace SMBD
             this.dGV_Registros.Name = "dGV_Registros";
             this.dGV_Registros.Size = new System.Drawing.Size(814, 195);
             this.dGV_Registros.TabIndex = 0;
-            // 
-            // tB_Salida
-            // 
-            this.tB_Salida.Location = new System.Drawing.Point(104, 16);
-            this.tB_Salida.Name = "tB_Salida";
-            this.tB_Salida.Size = new System.Drawing.Size(100, 20);
-            this.tB_Salida.TabIndex = 2;
-            // 
-            // tB_Compilacion
-            // 
-            this.tB_Compilacion.Location = new System.Drawing.Point(210, 16);
-            this.tB_Compilacion.Name = "tB_Compilacion";
-            this.tB_Compilacion.Size = new System.Drawing.Size(100, 20);
-            this.tB_Compilacion.TabIndex = 3;
             // 
             // fSQL
             // 

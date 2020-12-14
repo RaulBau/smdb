@@ -39,7 +39,7 @@ namespace SMBD
         {
             try
             {
-                tB_Compilacion.Text = ejecutaSentencia();
+                tB_Compilacion.Text = ejecutaSentencia(rTB_Sentencias.Text);
                 muestraResultados();
             }
             catch (Exception exc)
@@ -83,16 +83,17 @@ namespace SMBD
             }
         }
 
-        public string ejecutaSentencia()
+        public string ejecutaSentencia(string entrada)
         {
             ejecuta = true;
+            dGV_Registros.Columns.Clear();
             // si no hay tablas, amonos
             if (!select.hay_tablas())
             {
                 ejecuta = false;
                 return "Abre una base de datos primero!.";
             }
-            string entrada = rTB_Sentencias.Text;
+
             if (select.selectAll(entrada) && select.ejecutaSelectAll())
             {
                 tB_Salida.Text = select.resultado;
@@ -119,7 +120,6 @@ namespace SMBD
                 return;
             dGV_Registros.Columns.Clear();
 
-            // agregando el encabezado del grid
             for (int i = 0; i < select.atributos_tablaA.Length; i++)
             {
                 if (!select.resuelve_ambiguedad)
@@ -128,15 +128,14 @@ namespace SMBD
                     dGV_Registros.Columns.Add(select.tabla1 + "." + select.atributos_tablaA[i], select.tabla1 + "." + select.atributos_tablaA[i]);
             }
 
-            for (int i = 0; i < select.atributos_tablaB.Length; i++)
-            {
-                if (!select.resuelve_ambiguedad)
-                    dGV_Registros.Columns.Add(select.atributos_tablaB[i], select.atributos_tablaB[i]);
-                else
-                    dGV_Registros.Columns.Add(select.tabla2 + "." + select.atributos_tablaB[i], select.tabla2 + "." + select.atributos_tablaB[i]);
-            }
+            //for (int i = 0; i < select.atributos_tablaB.Length; i++)
+            //{
+            //    if (!select.resuelve_ambiguedad)
+            //        dGV_Registros.Columns.Add(select.atributos_tablaB[i], select.atributos_tablaB[i]);
+            //    else
+            //        dGV_Registros.Columns.Add(select.tabla2 + "." + select.atributos_tablaB[i], select.tabla2 + "." + select.atributos_tablaB[i]);
+            //}
 
-            // agregando los datos
             for (int i = 0; i < select.datos.Count; i++)
             {
                 dGV_Registros.Rows.Add(select.datos[i].ToArray());
@@ -160,7 +159,7 @@ namespace SMBD
         {
             if (e.KeyCode == Keys.F5)
             {
-                tB_Compilacion.Text = ejecutaSentencia();
+                tB_Compilacion.Text = ejecutaSentencia(rTB_Sentencias.SelectedText);
                 muestraResultados();
             }
         }

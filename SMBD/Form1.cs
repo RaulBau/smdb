@@ -925,7 +925,7 @@ namespace SMBD
                             switch (t.atributos[i].tipoDato)
                             {
                                 case "Entero":
-                                    if (!Regex.IsMatch(dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), "^[1-9][0-9]*$"))
+                                    if (!Regex.IsMatch(dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), "^[0-9][0-9]*$"))
                                     {
                                         throw new Exception("El tipo de dato de " + t.atributos[i].nombre + " no es entero");
                                     }
@@ -1005,7 +1005,7 @@ namespace SMBD
                                     switch (t.atributos[i].tipoDato)
                                     {
                                         case "Entero":
-                                            if (!Regex.IsMatch(dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), "^[1-9][0-9]*$"))
+                                            if (!Regex.IsMatch(dGV_nuevoRegistro.Rows[0].Cells[i].Value.ToString(), "^[0-9][0-9]*$"))
                                             {
                                                 throw new Exception("El tipo de dato de " + t.atributos[i].nombre + " no es entero");
                                             }
