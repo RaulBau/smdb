@@ -131,8 +131,6 @@ namespace SMBD.Sentencias
         public string obtenAtributos()
         {
             string s = "";
-            //foreach (string str in atributos)
-            //    s += str + " ";
 
             atributos.ForEach(str => s += str + " ");
 
@@ -154,8 +152,8 @@ namespace SMBD.Sentencias
         public string resultado;
         public List<string> atributosTabla1, atributosTabla2;
         public List<List<string>> datos;
-        public List<string> ansA, ansB;
-        public List<int> atr_no_selA, atr_no_selB, ordenAtrib, ordenAtrib2;
+        public List<string> atribNoSelT1, atribNoSelT2;
+        public List<int> ordenAtrib, ordenAtrib2;
         public bool resuelve_ambiguedad;
         public List<Tabla> tablas;
         public Select(List<Tabla> t)
@@ -164,12 +162,10 @@ namespace SMBD.Sentencias
             resultado = "";
             tablas = t;
             datos = new List<List<string>>();
-            atr_no_selA = new List<int>();
-            atr_no_selB = new List<int>();
             atributosTabla1 = new List<string>();
             atributosTabla2 = new List<string>();
-            ansA = new List<string>();
-            ansB = new List<string>();
+            atribNoSelT1 = new List<string>();
+            atribNoSelT2 = new List<string>();
         }
 
         public bool ejecutaSelectAll()
@@ -207,7 +203,7 @@ namespace SMBD.Sentencias
                         return false;
                     }
 
-                    ansA = separaAtributos(t, 1);
+                    atribNoSelT1 = separaAtributos(t, 1);
                     datos = obtenRegistros(t, where);
                     resultado = "Ejecución terminada correctamente.";
                     return true;
@@ -246,19 +242,19 @@ namespace SMBD.Sentencias
             return res;
         }
 
-        public List<string> seleccionaAtributos(List<string> lista_atributos)
+        public List<string> seleccionaAtributos(List<string> listaAtrib)
         {
             List<string> atributosSeleccionados = new List<string>();
             string t = "";
 
-            List<string> atributos_usar;
+            List<string> atributosSel;
 
-            if (lista_atributos != null)
-                atributos_usar = lista_atributos;
+            if (listaAtrib != null)
+                atributosSel = listaAtrib;
             else
-                atributos_usar = this.atributos;
+                atributosSel = this.atributos;
 
-            foreach (string atr in atributos_usar)
+            foreach (string atr in atributosSel)
             {
                 if (atr.Contains('.'))
                 {
@@ -281,11 +277,10 @@ namespace SMBD.Sentencias
             {
                 if (!verifica_tablas(t1, t2, atributos))
                 {
-                    resultado = "No existe alguna tabla referenciada.";
+                    resultado = "Una de las tablas no existe.";
                     return false;
                 }
 
-                // comprobamos que los atributos seleccionados existan al menos en una de las dos tablas
                 foreach (string a in atributos)
                 {
                     if (atributos_repetidos())
@@ -294,16 +289,15 @@ namespace SMBD.Sentencias
                         return false;
                     }
 
-                    if (verifica_atributos(t1, new string[] { a }) && verifica_atributos(t2, new string[] { a }))
+                    if (revisaAtributos(t1, new string[] { a }) && revisaAtributos(t2, new string[] { a }))
                     {
-                        // verificamos que los atributos de cada tabla existan
-                        if (!(verifica_atributos(t1) && verifica_atributos(t2)))
+                        if (!(revisaAtributos(t1) && revisaAtributos(t2)))
                         {
-                            resultado = "Un atributo no existe.";
+                            resultado = "No existe un atributo para unir.";
                             return false;
                         }
                     }
-                    if (!verifica_atributos(t1, new string[] { a }) && !verifica_atributos(t2, new string[] { a }))
+                    if (!revisaAtributos(t1, new string[] { a }) && !revisaAtributos(t2, new string[] { a }))
                     {
                         resultado = "Un atrtibuto no existe.";
                         return false;
@@ -312,16 +306,12 @@ namespace SMBD.Sentencias
 
                 inicializa_variables(t1, t2);
 
-                //reorganiza_atributos(ta, tb);
+                atribNoSelT1 = separaAtributos(t1, 1);
+                atribNoSelT2 = separaAtributos(t2, 1);
 
-                ansA = separaAtributos(t1, 1);
-                ansB = separaAtributos(t2, 1);
-
-                int ind_atr_tA = t1.obtenNombreAtributos().IndexOf(atributo);
-                int ind_atr_tB = t2.obtenNombreAtributos().IndexOf(atributo);
-
-                // obtenemos todos las tuplas que cumplen la condicion
-                datos = obten_tuplas_inner_join(t1, t2, ind_atr_tA, ind_atr_tB);
+                int indiceAtribT1 = t1.obtenNombreAtributos().IndexOf(atributo);
+                int indiceAtribT2 = t2.obtenNombreAtributos().IndexOf(atributo);
+                datos = obtenRegistrosIJ(t1, t2, indiceAtribT1, indiceAtribT2);
                 resultado = "Ejecución terminada correctamente!.";
                 return true;
             }
@@ -329,7 +319,8 @@ namespace SMBD.Sentencias
             return false;
         }
 
-        private List<List<string>> obten_tuplas_inner_join(Tabla a, Tabla b, int ia, int ib)
+        private List<List<string>> obtenRegistrosIJ
+            (Tabla a, Tabla b, int ia, int ib)
         {
             List<List<string>> ra = obtenRegistros(a, false);
             List<List<string>> rb = obtenRegistros(b, false);
@@ -358,9 +349,9 @@ namespace SMBD.Sentencias
             return resultado;
         }
 
-        private bool verifica_atributos(Tabla t, bool where)
+        private bool revisaAtributos(Tabla t, bool where)
         {
-            if (!verifica_atributos(t, this.atributos.ToArray()))
+            if (!revisaAtributos(t, this.atributos.ToArray()))
                 return false;
 
             if (where)
@@ -369,7 +360,7 @@ namespace SMBD.Sentencias
             return true;
         }
 
-        private bool verifica_atributos(Tabla t, string[] atributos)
+        private bool revisaAtributos(Tabla t, string[] atributos)
         {
             List<string> atrs = t.obtenNombreAtributos().ToList();
 
@@ -379,7 +370,7 @@ namespace SMBD.Sentencias
             return true;
         }
 
-        private bool verifica_atributos(Tabla tabla)
+        private bool revisaAtributos(Tabla tabla)
         {
             List<string> atr_de_tabla = new List<string>();
 
@@ -391,7 +382,7 @@ namespace SMBD.Sentencias
                     atr_de_tabla.Add(s.Substring((s.IndexOf('.') + 1), (s.Length - s.IndexOf('.') - 1)));
                 }
             }
-            return verifica_atributos(tabla, atr_de_tabla.ToArray());
+            return revisaAtributos(tabla, atr_de_tabla.ToArray());
         }
 
 
@@ -424,8 +415,8 @@ namespace SMBD.Sentencias
         {
             atributosTabla1 = new List<string>();
             atributosTabla2 = new List<string>();
-            ansA = new List<string>();
-            ansB = new List<string>();
+            atribNoSelT1 = new List<string>();
+            atribNoSelT2 = new List<string>();
             if (tabA != null)
                 atributosTabla1 = tabA.obtenNombreAtributos();
             if (tabB != null)
@@ -593,8 +584,6 @@ namespace SMBD.Sentencias
                 atributosTabla2 = tb.obtenNombreAtributos();
             ordenAtrib = new List<int>();
             ordenAtrib2 = new List<int>();
-            atr_no_selA = new List<int>();
-            atr_no_selB = new List<int>();
             datos.Clear();
         }
 

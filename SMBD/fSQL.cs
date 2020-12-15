@@ -160,8 +160,8 @@ namespace SMBD
 
             try
             {
-                agrega_cabecera_datos();
-                elimina_columnas_sobrantes();
+                generaDataGrid();
+                eliminaColumnasDGV();
                 organiza_columnas();
             }
             catch (Exception e)
@@ -171,9 +171,8 @@ namespace SMBD
             }
         }
 
-        private void agrega_cabecera_datos()
+        private void generaDataGrid()
         {
-            // agregando el encabezado del grid
             for (int i = 0; i < select.atributosTabla1.Count; i++)
             {
                 dGV_Registros.Columns.Add(select.tabla1 + "." + select.atributosTabla1[i], select.atributosTabla1[i]);
@@ -184,7 +183,6 @@ namespace SMBD
                 dGV_Registros.Columns.Add(select.tabla2 + "." + select.atributosTabla2[i], select.atributosTabla2[i]);
             }
 
-            // agregando los datos
             for (int i = 0; i < select.datos.Count; i++)
             {
                 dGV_Registros.Rows.Add(select.datos[i].ToArray());
@@ -192,16 +190,15 @@ namespace SMBD
         }
 
 
-        private void elimina_columnas_sobrantes()
+        private void eliminaColumnasDGV()
         {
-            // borrando las columnas que no nos interesan
-            for (int i = 0; i < select.ansA.Count; i++)
-                dGV_Registros.Columns.Remove(dGV_Registros.Columns[select.tabla1 + "." + select.ansA[i]]);
+            for (int i = 0; i < select.atribNoSelT1.Count; i++)
+                dGV_Registros.Columns.Remove(dGV_Registros.Columns[select.tabla1 + "." + select.atribNoSelT1[i]]);
 
-            int desplazamiento = select.ansA.Count + 1;
+            int desplazamiento = select.atribNoSelT1.Count + 1;
 
-            for (int i = 0; i < select.ansB.Count; i++)
-                dGV_Registros.Columns.Remove(dGV_Registros.Columns[select.tabla2 + "." + select.ansB[i]]);
+            for (int i = 0; i < select.atribNoSelT2.Count; i++)
+                dGV_Registros.Columns.Remove(dGV_Registros.Columns[select.tabla2 + "." + select.atribNoSelT2[i]]);
         }
 
         private void organiza_columnas()
