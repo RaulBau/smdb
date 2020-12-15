@@ -147,7 +147,7 @@ namespace SMBD.Sentencias
         }
     }
 
-    class Select : Sentencias
+    class Consultas : Sentencias
     {
         public string resultado;
         public List<string> atributosTabla1, atributosTabla2;
@@ -156,7 +156,7 @@ namespace SMBD.Sentencias
         public List<int> ordenAtrib, ordenAtrib2;
         public bool resuelve_ambiguedad;
         public List<Tabla> tablas;
-        public Select(List<Tabla> t)
+        public Consultas(List<Tabla> t)
         {
             resuelve_ambiguedad = false;
             resultado = "";
