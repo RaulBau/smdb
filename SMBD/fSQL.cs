@@ -39,7 +39,7 @@ namespace SMBD
         {
             try
             {
-                tB_Compilacion.Text = ejecutaSentencia(rTB_Sentencias.Text);
+                rTB_ejecucion.AppendText(ejecutaSentencia(rTB_Sentencias.Text));
                 muestraResultados();
             }
             catch (Exception exc)
@@ -86,80 +86,156 @@ namespace SMBD
         public string ejecutaSentencia(string entrada)
         {
             ejecuta = true;
+            dGV_Registros.Rows.Clear();
             dGV_Registros.Columns.Clear();
-            // si no hay tablas, amonos
-            if (!select.hay_tablas())
+            rTB_ejecucion.Clear();
+            string msg = "Error de Sintaxis.\n";
+
+            if (!select.baseAbierta())
             {
                 ejecuta = false;
-                return "Abre una base de datos primero!.";
+                msg = "Abre una base de datos\n";
             }
 
-            if (select.selectAll(entrada) && select.ejecutaSelectAll())
+            if (select.selectAll(entrada))
             {
-                tB_Salida.Text = select.resultado;
-                return "de la tabla " + select.tabla1 + " muestra todos las tuplas.";
+                if (select.ejecutaSelectAll())
+                {
+                    ejecuta = true;
+                    rTB_ejecucion.AppendText(select.resultado + "\n");
+                    msg = "Se mostraron todos los atributos de " + select.tabla1 + ".\n";
+                }
+                else
+                    rTB_ejecucion.AppendText(select.resultado + "\n");
             }
-            else if (select.selectAtributos(entrada) && select.ejecutaSelectAtributos(false))
+            else
             {
-                tB_Salida.Text = select.resultado;
-                return "de la tabla " + select.tabla1 + " muestra todos las tuplas pero solo con los atributos " + select.obtenAtributos();
+                if (select.selectAtributos(entrada))
+                {
+                    if (select.ejecutaSelectAtributos(false))
+                    {
+                        ejecuta = true;
+                        rTB_ejecucion.AppendText(select.resultado + "\n");
+                        msg = "Se mostraron " + select.obtenAtributos() + "los atributos de " + select.tabla1 + ".\n";
+                    }
+                    else
+                        rTB_ejecucion.AppendText(select.resultado + "\n");
+                }
+                else
+                {
+                    if (select.selectWhere(entrada))
+                    {
+                        if (select.ejecutaSelectAtributos(true))
+                        {
+                            ejecuta = true;
+                            rTB_ejecucion.AppendText(select.resultado + "\n");
+                            msg = "Se mostraron " + select.obtenAtributos() + "los atributos de " + select.tabla1 + " donde " + select.nomAtrib + " " + select.condicion + " " + select.valor + "\n";
+                        }
+                        else
+                            rTB_ejecucion.AppendText(select.resultado + "\n");
+                    }
+                    else
+                    {
+                        if (select.innerJoin(entrada))
+                        {
+                            if (select.ejecutaSelectInnerJoin())
+                            {
+                                ejecuta = true;
+                                rTB_ejecucion.AppendText(select.resultado + "\n");
+                                msg = "Se mostraron " + select.obtenAtributos() + "los atributos de " + select.tabla1 + " donde se unio con la tabla " + select.tabla2 + "\n";
+                            }
+                            else rTB_ejecucion.AppendText(select.resultado + "\n");
+                        }
+                    }
+                }
             }
-            else if (select.selectWhere(entrada) && select.ejecutaSelectAtributos(true))
-            {
-                tB_Salida.Text = select.resultado;
-                return "de la tabla " + select.tabla1 + " muestra todos las tuplas pero solo con los atributos " + select.obtenAtributos() + " y se cumple que el atributo " + select.nomAtrib + " " + select.condicion + " " + select.valor;
-            }
-            ejecuta = false;
-            //limpia_grid();
-            return "Error de Sintaxis!.";
+
+            return msg;
         }
-
         private void muestraResultados()
         {
+            dGV_Registros.Columns.Clear();
             if (!ejecuta)
                 return;
-            dGV_Registros.Columns.Clear();
 
-            for (int i = 0; i < select.atributos_tablaA.Length; i++)
+            try
             {
-                if (!select.resuelve_ambiguedad)
-                    dGV_Registros.Columns.Add(select.atributos_tablaA[i], select.atributos_tablaA[i]);
-                else
-                    dGV_Registros.Columns.Add(select.tabla1 + "." + select.atributos_tablaA[i], select.tabla1 + "." + select.atributos_tablaA[i]);
+                agrega_cabecera_datos();
+                elimina_columnas_sobrantes();
+                organiza_columnas();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                dGV_Registros.Columns.Clear();
+            }
+        }
+
+        private void agrega_cabecera_datos()
+        {
+            // agregando el encabezado del grid
+            for (int i = 0; i < select.atributosTabla1.Count; i++)
+            {
+                dGV_Registros.Columns.Add(select.tabla1 + "." + select.atributosTabla1[i], select.atributosTabla1[i]);
             }
 
-            //for (int i = 0; i < select.atributos_tablaB.Length; i++)
-            //{
-            //    if (!select.resuelve_ambiguedad)
-            //        dGV_Registros.Columns.Add(select.atributos_tablaB[i], select.atributos_tablaB[i]);
-            //    else
-            //        dGV_Registros.Columns.Add(select.tabla2 + "." + select.atributos_tablaB[i], select.tabla2 + "." + select.atributos_tablaB[i]);
-            //}
+            for (int i = 0; i < select.atributosTabla2.Count; i++)
+            {
+                dGV_Registros.Columns.Add(select.tabla2 + "." + select.atributosTabla2[i], select.atributosTabla2[i]);
+            }
 
+            // agregando los datos
             for (int i = 0; i < select.datos.Count; i++)
             {
                 dGV_Registros.Rows.Add(select.datos[i].ToArray());
             }
-
-            // ocultando las columnas que no nos interesan
-            for (int i = 0; i < select.atr_no_selA.Count; i++)
-                dGV_Registros.Columns[select.atr_no_selA[i]].Visible = false;
-
-            int desplazamiento = select.atr_no_selA.Count + 1;
-
-            for (int i = 0; i < select.atr_no_selB.Count; i++)
-                dGV_Registros.Columns[select.atr_no_selB[i] + desplazamiento].Visible = false;
-
-            // reorganizando las columnas
-            for (int i = 0; i < select.orden_atrA.Count; i++)
-                dGV_Registros.Columns[select.orden_atrA[i]].DisplayIndex = i;
         }
+
+
+        private void elimina_columnas_sobrantes()
+        {
+            // borrando las columnas que no nos interesan
+            for (int i = 0; i < select.ansA.Count; i++)
+                dGV_Registros.Columns.Remove(dGV_Registros.Columns[select.tabla1 + "." + select.ansA[i]]);
+
+            int desplazamiento = select.ansA.Count + 1;
+
+            for (int i = 0; i < select.ansB.Count; i++)
+                dGV_Registros.Columns.Remove(dGV_Registros.Columns[select.tabla2 + "." + select.ansB[i]]);
+        }
+
+        private void organiza_columnas()
+        {
+            // reorganizando las columnas
+            for (int i = 0; i < select.atributos.Count; i++)
+            {
+                if (dGV_Registros.Columns.Contains(select.tabla1 + "." + select.atributos[i]))
+                {
+                    dGV_Registros.Columns[select.tabla1 + "." + select.atributos[i]].DisplayIndex = i;
+                }
+                else if (dGV_Registros.Columns.Contains(select.atributos[i]))
+                {
+                    dGV_Registros.Columns[select.atributos[i]].DisplayIndex = i;
+                }
+                else if (dGV_Registros.Columns.Contains(select.tabla2 + "." + select.atributos[i]))
+                {
+                    dGV_Registros.Columns[select.tabla2 + "." + select.atributos[i]].DisplayIndex = i;
+                }
+                else if (dGV_Registros.Columns.Contains(select.atributos[i]))
+                {
+                    dGV_Registros.Columns[select.atributos[i]].DisplayIndex = i;
+                }
+                if (select.atributos[i].Contains("."))
+                    dGV_Registros.Columns[select.atributos[i]].HeaderText = select.atributos[i];
+            }
+        }
+
 
         private void rTB_Sentencias_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F5)
             {
-                tB_Compilacion.Text = ejecutaSentencia(rTB_Sentencias.SelectedText);
+                rTB_ejecucion.AppendText(ejecutaSentencia(rTB_Sentencias.SelectedText));
                 muestraResultados();
             }
         }

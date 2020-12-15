@@ -253,6 +253,7 @@ namespace SMBD
             // 
             // dGV_AtributosTabla
             // 
+            this.dGV_AtributosTabla.AllowUserToAddRows = false;
             this.dGV_AtributosTabla.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dGV_AtributosTabla.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
