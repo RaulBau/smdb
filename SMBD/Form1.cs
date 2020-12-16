@@ -1279,6 +1279,194 @@ namespace SMBD
         private void btn_eliminarRegistro_Click(object sender, EventArgs e)
         {
 
+            var rIndex = -1;
+            var cIndex = -1;
+
+            if (dGV_AtributosTabla.CurrentCell != null)
+            {
+                rIndex = dGV_AtributosTabla.CurrentCell.RowIndex;
+                cIndex = dGV_AtributosTabla.CurrentCell.ColumnIndex;
+            }
+            eliminaRegistro(rIndex, cIndex, tablaSeleccionada);
+        }
+
+        private void eliminaRegistro(int rIndex, int cIndex, string tabSel)
+        {
+            if (cIndex != -1 && rIndex != -1)
+            {
+                try
+                {
+                    var t = tablas.Find(x => x.nombre == Path.GetFileName(tabSel));
+                    if (t != null)
+                    {
+                        var pk = false;
+                        var fk = false;
+                        var allFK = true;
+                        var pkId = -1;
+                        var pkIndex = -1;
+
+                        var j = -1;
+                        t.atributos.ForEach(a =>
+                        {
+                            j++;
+                            allFK = allFK && a.FK;
+                            if (a.PK == true) { pk = true; pkId = a.id; pkIndex = j; }
+                            if (a.FK == true) { fk = true; }
+                        });
+
+                        if (pk == false && fk == false)
+                        {
+                            eliminaRegistros(rIndex, t.nombre);
+                        }
+                        else
+                        {
+                            if (allFK == true)
+                            {
+                                eliminaRegistros(rIndex, t.nombre);
+                            }
+                            else
+                            {
+                                if (pk == true)
+                                    eliminaRegistrosCascada(t.atributos[cIndex], dGV_AtributosTabla.Rows[pkIndex].Cells[cIndex].Value.ToString(), t.nombre);
+                            }
+                        }
+                        cargaTablaSeleccionada();
+                    }
+                }
+                catch (Exception excep)
+                {
+                    MessageBox.Show(excep.Message);
+                }
+            }
+        }
+
+        private void eliminaRegistrosCascada(Atributo atrib, string dato, string tabSel)
+        {
+            var t = tablas.Find(x => x.nombre == Path.GetFileName(tabSel));
+            var ts = tablas.FindAll(x => x.nombre != Path.GetFileName(tabSel) && x.atributos.Find(a => a.ref_id == atrib.id) != null);
+            var lista = new List<Dictionary<string, object>>();
+            string d = "";
+
+            if (t != null)
+            {
+                //eliminaRegistros();
+                try
+                {
+                    var arch = this.pathBase + Path.DirectorySeparatorChar + tabSel;
+                    using (StreamReader archivo = new StreamReader(arch))
+                    {
+                        d = archivo.ReadLine();
+                    }
+
+                    if (d != null && d != "")
+                    {
+                        lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                    }
+
+                    if (lista.Count > 0)
+                    {
+                        object o;
+                        var ind = lista.FindIndex(li => li.TryGetValue(atrib.nombre, out o));
+
+                        if (ind != -1)
+                            eliminaRegistros(ind, t.nombre);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+
+            if (ts != null)
+            {
+                for (int i = 0; i < ts.Count; i++)
+                {
+                    var atribs = ts[i].atributos;
+
+                    try
+                    {
+                        var arch = this.pathBase + Path.DirectorySeparatorChar + ts[i].nombre;
+                        using (StreamReader archivo = new StreamReader(arch))
+                        {
+                            d = archivo.ReadLine();
+                        }
+
+                        if (d != null && d != "")
+                        {
+                            lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                        }
+
+                        if (lista.Count > 0)
+                        {
+                            object o;
+                            var index = -1;
+                            var indexPK = -1;
+
+                            index = lista.FindIndex(l => l.TryGetValue(atrib.nombre, out o) == true);
+                            indexPK = atribs.FindIndex(a => a.PK == true);
+                            if (indexPK != -1)
+                                eliminaRegistrosCascada(atribs[indexPK], lista[0][atribs[indexPK].nombre].ToString(), ts[i].nombre);
+
+                            lista.RemoveAll(l => l.TryGetValue(atrib.nombre, out o) == true);
+
+                            if (lista.Count == 0)
+                            {
+                                for (int j = 0; j < atribs.Count; j++)
+                                {
+                                    atribs[j].datos = false;
+                                }
+                                guardaTablas();
+                            }
+                        }
+                    }
+                    catch (Exception exc)
+                    {
+                        MessageBox.Show(exc.Message);
+                    }
+                }
+            }
+        }
+
+        private void eliminaRegistros(int i, string tabla)
+        {
+            var lista = new List<Dictionary<string, object>>();
+            string d = "";
+            try
+            {
+                var arch = this.pathBase + Path.DirectorySeparatorChar + tabla;
+                using (StreamReader archivo = new StreamReader(arch))
+                {
+                    d = archivo.ReadLine();
+                }
+
+                if (d != null && d != "")
+                {
+                    lista = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(d);
+                }
+
+                if (lista.Count > 0)
+                {
+                    lista.RemoveAt(i);
+                    guardaTabla(arch, lista);
+                    if (lista.Count == 0)
+                    {
+                        var t = tablas.Find(tab => tab.nombre == tabla);
+                        if (t != null)
+                        {
+                            for (int j = 0; j < t.atributos.Count; j++)
+                            {
+                                t.atributos[j].datos = false;
+                            }
+                            guardaTablas();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         #region Consultas
