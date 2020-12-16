@@ -22,6 +22,7 @@ namespace SMBD.Sentencias
         public string condicion = "";
         public string valor = "";
 
+        //Constuctor de la clase
         public Sentencias()
         {
             selectAllRegEx = new Regex(@"\s*\n*\t*(SELECT|select)\s+\*\s+(FROM|from)\s+(\w+)\s*;?\s*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -33,6 +34,7 @@ namespace SMBD.Sentencias
             atributo = "";
         }
 
+        //Funcion para inicialozar los datos
         public void inicializaDatos()
         {
             atributos.Clear();
@@ -43,6 +45,7 @@ namespace SMBD.Sentencias
             valor = "";
         }
 
+        //Funcion para verificar la sintaxis de select all
         public bool selectAll(string entrada)
         {
             MatchCollection matchCol = selectAllRegEx.Matches(entrada);
@@ -59,6 +62,7 @@ namespace SMBD.Sentencias
             return sentenciaCorrecta;
         }
 
+        //Funcion para verificar la sintaxis de select con atributos
         public bool selectAtributos(string entrada)
         {
             MatchCollection matchCol = selectAtributosRegEx.Matches(entrada);
@@ -76,6 +80,7 @@ namespace SMBD.Sentencias
             return sentenciaCorrecta;
         }
 
+        //Funcion para verificar la sintaxis de select where
         public bool selectWhere(string entrada)
         {
             MatchCollection matchCol = selectWhereRegEx.Matches(entrada);
@@ -96,6 +101,7 @@ namespace SMBD.Sentencias
             return sentenciaCorrecta;
         }
 
+        //Funcion para verificar la sintaxis de inner join
         public bool innerJoin(string entrada)
         {
             string atrA = "", atrB = "";
@@ -128,6 +134,7 @@ namespace SMBD.Sentencias
             return sentenciaCorrecta;
         }
 
+        //Funcion para obtener la lista de los nombres de los atributos
         public string obtenAtributos()
         {
             string s = "";
@@ -137,6 +144,7 @@ namespace SMBD.Sentencias
             return s;
         }
 
+        //Funcion para eliminar los elementos 
         private List<string> limpiaCadena(string cadena)
         {
             Regex r = new Regex(@"\s+|,");
@@ -154,11 +162,11 @@ namespace SMBD.Sentencias
         public List<List<string>> datos;
         public List<string> atribNoSelT1, atribNoSelT2;
         public List<int> ordenAtrib, ordenAtrib2;
-        public bool resuelve_ambiguedad;
         public List<Tabla> tablas;
+
+        //Constuctor de la clase
         public Consultas(List<Tabla> t)
         {
-            resuelve_ambiguedad = false;
             resultado = "";
             tablas = t;
             datos = new List<List<string>>();
@@ -168,6 +176,7 @@ namespace SMBD.Sentencias
             atribNoSelT2 = new List<string>();
         }
 
+        //Funcion para elecutar la consulta select all
         public bool ejecutaSelectAll()
         {
             foreach (Tabla t in tablas)
@@ -189,6 +198,7 @@ namespace SMBD.Sentencias
             return false;
         }
 
+        //Funcion para elecutar la consulta select con atributos
         public bool ejecutaSelectAtributos(bool where)
         {
             foreach (Tabla t in tablas)
@@ -214,19 +224,7 @@ namespace SMBD.Sentencias
             return false;
         }
 
-        private List<int> separaAtributos(Tabla t)
-        {
-            List<int> res = new List<int>();
-
-            for (int i = 0; i < t.atributos.Count; i++)
-            {
-                if (!this.atributos.Contains(t.atributos[i].nombre))
-                    res.Add(i);
-            }
-
-            return res;
-        }
-
+        //Inicaliza los atributos
         private List<string> separaAtributos(Tabla t, int n)
         {
             List<string> res = new List<string>();
@@ -242,6 +240,7 @@ namespace SMBD.Sentencias
             return res;
         }
 
+        //Funcion para obtener atributo, separandolos si se usa el nombre de la tabla antes
         public List<string> seleccionaAtributos(List<string> listaAtrib)
         {
             List<string> atributosSeleccionados = new List<string>();
@@ -268,6 +267,7 @@ namespace SMBD.Sentencias
             return atributosSeleccionados;
         }
 
+        //Funcion para elecutar la consulta select con inner join
         public bool ejecutaSelectInnerJoin()
         {
             Tabla t1 = tablas.Find(t => t.nombre == tabla1 + ".t");
@@ -275,7 +275,7 @@ namespace SMBD.Sentencias
 
             if (t1 != null && t2 != null)
             {
-                if (!verifica_tablas(t1, t2, atributos))
+                if (!ExisteTablaAtributo(t1, t2, atributos))
                 {
                     resultado = "Una de las tablas no existe.";
                     return false;
@@ -283,13 +283,13 @@ namespace SMBD.Sentencias
 
                 foreach (string a in atributos)
                 {
-                    if (atributos_repetidos())
+                    if (atributosRepetidos())
                     {
                         resultado = "Existen atributos repetidos.";
                         return false;
                     }
 
-                    if (revisaAtributos(t1, new string[] { a }) && revisaAtributos(t2, new string[] { a }))
+                    if (revisaAtributos(t1, new List<string> { a }) && revisaAtributos(t2, new List<string> { a }))
                     {
                         if (!(revisaAtributos(t1) && revisaAtributos(t2)))
                         {
@@ -297,14 +297,14 @@ namespace SMBD.Sentencias
                             return false;
                         }
                     }
-                    if (!revisaAtributos(t1, new string[] { a }) && !revisaAtributos(t2, new string[] { a }))
+                    if (!revisaAtributos(t1, new List<string> { a }) && !revisaAtributos(t2, new List<string> { a }))
                     {
                         resultado = "Un atrtibuto no existe.";
                         return false;
                     }
                 }
 
-                inicializa_variables(t1, t2);
+                inicializaTablas(t1, t2);
 
                 atribNoSelT1 = separaAtributos(t1, 1);
                 atribNoSelT2 = separaAtributos(t2, 1);
@@ -319,6 +319,7 @@ namespace SMBD.Sentencias
             return false;
         }
 
+        //Funcion pára obtener los registros del inner join
         private List<List<string>> obtenRegistrosIJ
             (Tabla a, Tabla b, int ia, int ib)
         {
@@ -349,27 +350,18 @@ namespace SMBD.Sentencias
             return resultado;
         }
 
-        private bool revisaAtributos(Tabla t, bool where)
-        {
-            if (!revisaAtributos(t, this.atributos.ToArray()))
-                return false;
-
-            if (where)
-                return verifica_where(t);
-
-            return true;
-        }
-
-        private bool revisaAtributos(Tabla t, string[] atributos)
+        //Funcion para verificar si existen atributos
+        private bool revisaAtributos(Tabla t, List<string> atributos)
         {
             List<string> atrs = t.obtenNombreAtributos().ToList();
 
-            foreach (string s in seleccionaAtributos(atributos.ToList()))
+            foreach (string s in seleccionaAtributos(atributos))
                 if (!atrs.Contains(s))
                     return false;
             return true;
         }
 
+        //Funcion para verificar si existen atributos
         private bool revisaAtributos(Tabla tabla)
         {
             List<string> atr_de_tabla = new List<string>();
@@ -382,11 +374,11 @@ namespace SMBD.Sentencias
                     atr_de_tabla.Add(s.Substring((s.IndexOf('.') + 1), (s.Length - s.IndexOf('.') - 1)));
                 }
             }
-            return revisaAtributos(tabla, atr_de_tabla.ToArray());
+            return revisaAtributos(tabla, atr_de_tabla);
         }
 
-
-        private bool atributos_repetidos()
+        //Funcion para saber si hay atributos repetidos
+        private bool atributosRepetidos()
         {
             foreach (var atr in atributos)
             {
@@ -396,14 +388,15 @@ namespace SMBD.Sentencias
             return false;
         }
 
-        private bool verifica_tablas(Tabla tab1, Tabla tab2, List<string> atributos)
+        //Funcion para verificar si existe la tabla antes del atributo -> Tabla.atributo
+        private bool ExisteTablaAtributo(Tabla tab1, Tabla tab2, List<string> atributos)
         {
             string tab = "";
             foreach (string s in atributos)
             {
                 if (s.Contains('.'))
                 {
-                    tab = s.Substring(0, s.IndexOf('.'));
+                    tab = s.Split('.')[0];
                     if (tab1.nombre != tab && tab2.nombre != tab)
                         return false;
                 }
@@ -411,7 +404,8 @@ namespace SMBD.Sentencias
             return true;
         }
 
-        private void inicializa_variables(Tabla tabA, Tabla tabB)
+        //Funcion para inicializar los datos usados en las consultas
+        private void inicializaTablas(Tabla tabA, Tabla tabB)
         {
             atributosTabla1 = new List<string>();
             atributosTabla2 = new List<string>();
@@ -424,6 +418,7 @@ namespace SMBD.Sentencias
             datos.Clear();
         }
 
+        //Funcion para verificar si los atributos cumplen la condicion de la consulta
         public bool cumpleCondicion(Tabla t, string[] tupla)
         {
             int indiceAtributo = t.obtenNombreAtributos().IndexOf(nomAtrib);
@@ -461,6 +456,7 @@ namespace SMBD.Sentencias
             return r;
         }
 
+        //Funcion para verificar si hay hablas
         public bool baseAbierta()
         {
             var b = true;
@@ -474,18 +470,19 @@ namespace SMBD.Sentencias
             return b;
         }
 
+        //Funcion para verificar los atributos
         private bool existenAtributos(Tabla t, bool where)
         {
-            if (!existenAtributos(t, this.atributos.ToArray()))
+            if (!existenAtributos(t, this.atributos))
                 return false;
-
             if (where)
-                return verifica_where(t);
+                return revisaWhere(t);
 
             return true;
         }
 
-        private bool existenAtributos(Tabla t, string[] atributos)
+        //Funcion para verificar si los atributos existen en la tabla
+        private bool existenAtributos(Tabla t, List<string> atributos)
         {
             List<string> atrs = t.obtenNombreAtributos();
             foreach (string s in atributos)
@@ -494,7 +491,8 @@ namespace SMBD.Sentencias
             return true;
         }
 
-        private bool verifica_where(Tabla t)
+        //Funcion para verificar si el tipo de dato
+        private bool revisaWhere(Tabla t)
         {
             List<string> nombreAtributos = t.obtenNombreAtributos();
 
@@ -516,14 +514,16 @@ namespace SMBD.Sentencias
             return true;
         }
 
+        //Funcion para crear una nueva lista a partir de una ya existente
         private List<string> copiaLista(List<string> lista)
         {
-            List<string> clona = new List<string>();
+            List<string> nl = new List<string>();
             foreach (string s in lista)
-                clona.Add(s);
-            return clona;
+                nl.Add(s);
+            return nl;
         }
 
+        //Funcion para obtener los registros de un atributo
         private string obtenDatosAtributo(Dictionary<string, object> tupla, Tabla t)
         {
             string s = "";
@@ -537,37 +537,26 @@ namespace SMBD.Sentencias
             return s;
         }
 
-        private List<int> separaAtributosMostrar(Tabla t)
-        {
-            List<int> res = new List<int>();
-            for (int i = 0; i < t.atributos.Count; i++)
-            {
-                if (!this.atributos.Contains(t.atributos[i].nombre))
-                    res.Add(i);
-            }
-
-            return res;
-        }
-
+        //Funcion para obtener los registros de una tabla
         private List<List<string>> obtenRegistros(Tabla t, bool where)
         {
             List<List<string>> registros = new List<List<string>>();
             for (int i = 0; i < t.registros.Count; i++)
             {
                 registros.Add(new List<string>());
-                string[] datos_split = obtenDatosAtributo(t.registros[i], t).Split(',');
-                for (int j = 0; j < datos_split.Length; j++)
+                string[] split = obtenDatosAtributo(t.registros[i], t).Split(',');
+                for (int j = 0; j < split.Length; j++)
                 {
                     if (where)
                     {
-                        if (cumpleCondicion(t, datos_split))
+                        if (cumpleCondicion(t, split))
                         {
-                            registros.Last().Add(datos_split[j]);
+                            registros.Last().Add(split[j]);
                         }
                     }
                     else
                     {
-                        registros.Last().Add(datos_split[j]);
+                        registros.Last().Add(split[j]);
                     }
                 }
             }
@@ -576,6 +565,7 @@ namespace SMBD.Sentencias
             return registros;
         }
 
+        //Funcion para inicializar las listas de atributos
         private void inicializaVariables(Tabla ta, Tabla tb)
         {
             if (ta != null)
@@ -585,17 +575,6 @@ namespace SMBD.Sentencias
             ordenAtrib = new List<int>();
             ordenAtrib2 = new List<int>();
             datos.Clear();
-        }
-
-        private void reorganiza_atributos(Tabla ta, Tabla tb)
-        {
-            for (int i = 0; i < this.atributos.Count; i++)
-            {
-                if (ta != null)
-                    ordenAtrib.Add(ta.obtenNombreAtributos().IndexOf(this.atributos[i]));
-                if (tb != null)
-                    ordenAtrib2.Add(tb.obtenNombreAtributos().IndexOf(this.atributos[i]));
-            }
         }
     }
 }

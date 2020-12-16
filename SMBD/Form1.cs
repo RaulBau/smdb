@@ -29,6 +29,7 @@ namespace SMBD
             InitializeComponent();
         }
 
+        //Inicializa las variables del formulario
         private void Form1_Load(object sender, EventArgs e)
         {
             pathBase = "";
@@ -44,6 +45,7 @@ namespace SMBD
 
         #region Archivo
 
+        //Crea una carpeta en la ruta seleccionada con el nombre que da el usuario
         private void saveFD1_FileOk(object sender, CancelEventArgs e)
         {
             pathBase = saveFD1.FileName;
@@ -54,6 +56,7 @@ namespace SMBD
             inicializaDirectorio(pathBase);
         }
 
+        //Selecciona la ruta de la base de datos seleccionada
         private void openFD1_FileOk(object sender, CancelEventArgs e)
         {
             pathBase = commonOFD.FileName;
@@ -61,6 +64,7 @@ namespace SMBD
             Console.WriteLine(Directory.GetCurrentDirectory());
         }
 
+        //Configura el directorio de los dialogos
         private void inicializaDirectorio(string directorio)
         {
             commonOFD.InitialDirectory = directorio;
@@ -74,6 +78,7 @@ namespace SMBD
             listaTablasDirectorio();
         }
 
+        //Muestra las tablas del directorio seleccionado en un TreeView
         private void listaTablasDirectorio()
         {
             tV_ListaTablas.Nodes.Clear();
@@ -103,17 +108,15 @@ namespace SMBD
 
         }
 
+        //Elimina la base de datos los archivos que tienen la terminacion .t y .bd por si se selecciona un directorio incorrecto
         private void eliminarBase()
         {
             string[] archivos;
             if (MessageBox.Show("¿Quieres eliminar la base de datos actual?", "¿Estas seguro?", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-
                 try
                 {
-
                     archivos = Directory.GetFiles(pathBase);
-
                     archivos.ToList().ForEach(arch =>
                     {
                         switch (Path.GetExtension(arch))
@@ -144,6 +147,7 @@ namespace SMBD
             }
         }
 
+        //Renombra el archivo que contiene la base de datos y la carpeta que lo contiene
         private void renombrarBase()
         {
             string path = "";
@@ -183,6 +187,7 @@ namespace SMBD
         #endregion
 
         #region menu
+        //Controla las opciones del menu de la base de datos
         private void archivoToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             archivoToolStripMenuItem.DropDown.Close();
@@ -242,6 +247,7 @@ namespace SMBD
 
         #region tabla
 
+        //Controla las opcciones del menu tablas
         private void tablasToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             tablasToolStripMenuItem.DropDown.Close();
@@ -259,6 +265,7 @@ namespace SMBD
             }
         }
 
+        //Renombra la tabla seleccionada
         private void renombrarTabla()
         {
             string path = "";
@@ -308,6 +315,7 @@ namespace SMBD
                 }
         }
 
+        //Guarda los registros de la tabla
         private void guardaTablas()
         {
             string s = JsonConvert.SerializeObject(tablas);
@@ -318,6 +326,7 @@ namespace SMBD
             }
         }
 
+        //Carga los datos de la tabla seleccionada en el datagrid
         private void cargaTablaSeleccionada()
         {
             Tabla t = null;
@@ -400,6 +409,7 @@ namespace SMBD
             dGV_nuevoRegistro.Rows.Clear();
         }
 
+        //Selecciona la tabla al dar click en el Treeview
         private void tV_ListaTablas_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             switch (e.Button)
@@ -420,6 +430,7 @@ namespace SMBD
             }
         }
 
+        //Revisa la tecla presionada para crear una tabla
         private void tSTB_NuevaTabla_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r' || e.KeyChar == '\n')
@@ -428,6 +439,7 @@ namespace SMBD
             }
         }
 
+        //Crea una tabla con el nombre escrito en el control
         private void creaTabla()
         {
             string path = "";
@@ -469,6 +481,7 @@ namespace SMBD
             }
         }
 
+        //Crea un archivo de texto con el nombre escrito en el control
         private void saveFDTabla_FileOk(object sender, CancelEventArgs e)
         {
             File.CreateText(saveFDTabla.FileName);
@@ -477,16 +490,19 @@ namespace SMBD
 
         #endregion
 
+        //Funcion de pruebas
         private void toolSTB_NombreBD_Validated(object sender, EventArgs e)
         {
             MessageBox.Show("validado");
         }
 
+        //Funcion de pruebas
         private void toolSTB_NombreBD_Leave(object sender, EventArgs e)
         {
             //toolSTB_NombreBD.Text = "";
         }
 
+        //Obtiene el nombre de la base de datos
         private string obtenNombreBD()
         {
             string s = "";
@@ -497,11 +513,13 @@ namespace SMBD
             return s;
         }
 
+        //Muestra el nombre de la base de datos en el control
         private void archivoToolStripMenuItem_DropDownClosed(object sender, EventArgs e)
         {
             toolSTB_NombreBD.Text = obtenNombreBD();
         }
 
+        //Verifica la letra presionada y si es la correcta llama la funcion para renombrar la base de datos
         private void toolSTB_NombreBD_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r' || e.KeyChar == '\n')
@@ -510,6 +528,7 @@ namespace SMBD
             }
         }
 
+        //Verifica la letra presionada y si es la correcta llama la funcion para renombrar la tabla
         private void tSTB_nombreTabla_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r' || e.KeyChar == '\n')
@@ -519,7 +538,7 @@ namespace SMBD
         }
 
         #region Atributos
-
+        //Desactiva el control de llave foranea si se activa el de llave primaria
         private void cB_llavePrimaria_Click(object sender, EventArgs e)
         {
             switch (cB_llavePrimaria.Checked)
@@ -533,6 +552,7 @@ namespace SMBD
             }
         }
 
+        //Desactiva el control de llave primaria si se activa el de llave foranea
         private void cB_llaveForanea_Click(object sender, EventArgs e)
         {
             switch (cB_llaveForanea.Checked)
@@ -548,6 +568,7 @@ namespace SMBD
             }
         }
 
+        //Funcion para agregar un atributo con los datos seleccionados
         private void agregaAtributo()
         {
             int err = 0;
@@ -643,6 +664,7 @@ namespace SMBD
             }
         }
 
+        //Funcion que se activa cuando se presiona el boton para gregar atributos
         private void btn_agregaArtibuto_Click(object sender, EventArgs e)
         {
             if (pathBase != "")
@@ -662,6 +684,7 @@ namespace SMBD
             }
         }
 
+        //Muestra el control para elegir el tamaño de la cadena
         private void cB_tipoAtributo_SelectedIndexChanged(object sender, EventArgs e)
         {
             Console.WriteLine(cB_tipoAtributo.SelectedItem);
@@ -677,6 +700,7 @@ namespace SMBD
             }
         }
 
+        //Carga los datos de la llave foranea en los controles
         private void cB_llavesForaneas_SelectedIndexChanged(object sender, EventArgs e)
         {
             cB_tipoAtributo.SelectedItem = FKs[cB_llavesForaneas.SelectedIndex].tipoDato;
@@ -687,6 +711,7 @@ namespace SMBD
             tB_NombreAtributo.Text = FKs[cB_llavesForaneas.SelectedIndex].nombre;
         }
 
+        //Cambia el nombre del atributo seleccionado
         private void renombraAtributo(Tabla t, string vN, string nN, int id, int numAtrib)
         {
             string arch = "";
@@ -748,6 +773,7 @@ namespace SMBD
             cargaTablaSeleccionada();
         }
 
+        //Cambia el nombre de un atributo
         private List<Dictionary<string, object>> cambiaNombreAtributoRegistro(Tabla t, string nN, int id, List<Dictionary<string, object>> lista, bool cascada)
         {
             Atributo atr = null;
@@ -769,6 +795,7 @@ namespace SMBD
             return lista;
         }
 
+        //Guarda los datos de la tabla en el archivo
         private void guardaTabla(string tabla, List<Dictionary<string, object>> lista)
         {
             string s = JsonConvert.SerializeObject(lista);
@@ -778,6 +805,7 @@ namespace SMBD
             }
         }
 
+        //Accion del boton de modiciar articulo
         private void btn_modoficarAtributo_Click(object sender, EventArgs e)
         {
             try
@@ -805,6 +833,7 @@ namespace SMBD
             }
         }
 
+        //Carga los datos del atributo en los controles cuando se da click en una celda del control
         private void dGV_AtributosTabla_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             switch (cB_renombrarAtributo.Checked)
@@ -838,7 +867,7 @@ namespace SMBD
             }
         }
 
-
+        //Limpia los datos de los controles cuando se desmarca el control
         private void cB_renombrarAtributo_Click(object sender, EventArgs e)
         {
             switch (cB_renombrarAtributo.Checked)
@@ -859,6 +888,7 @@ namespace SMBD
             }
         }
 
+        //Activa el menu de contexto de los atributos
         private void dGV_AtributosTabla_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             switch (e.Button)
@@ -872,16 +902,19 @@ namespace SMBD
         }
         #endregion
 
+        //Desactiva el menu de cotnexto de los atributos
         private void cMS_atributos_Closed(object sender, ToolStripDropDownClosedEventArgs e)
         {
             cMS_atributos.Enabled = false;
         }
 
+        //Funcion de pruebas
         private void dGV_nuevoRegistro_RowValidated(object sender, DataGridViewCellEventArgs e)
         {
 
         }
 
+        //Agrega un registro en la tabla seleccionada
         private void guardaDatosTabla(Dictionary<string, object> datos)
         {
             string arch = tablaSeleccionada;
@@ -906,6 +939,7 @@ namespace SMBD
             }
         }
 
+        //Funcion para agregar registros
         private void cargaRegistro()
         {
             var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
@@ -1068,11 +1102,13 @@ namespace SMBD
             }
         }
 
+        //Funcion de pruebas
         private void actualizaPK(int id, object pk)
         {
 
         }
 
+        //Funcion para modificar los datos de un registro
         private void actualizaRegistro(Dictionary<string, object> reg, int numReg)
         {
             var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
@@ -1113,6 +1149,7 @@ namespace SMBD
             }
         }
 
+        //Funcion para modificar los datos de un registro
         private void modificaRegistro()
         {
             var t = tablas.Find(x => x.nombre == Path.GetFileName(tablaSeleccionada));
@@ -1133,6 +1170,7 @@ namespace SMBD
             }
         }
 
+        //Funcipn para saber si hay datos en la llave foranea
         private bool datosFK(int id)
         {
             var b = false;
@@ -1145,6 +1183,7 @@ namespace SMBD
             return b;
         }
 
+        //Funcion para obtener la tabla de un atributo usando el id del atributo
         private string obtenTablaAtributo(int id)
         {
             string s = "";
@@ -1156,6 +1195,7 @@ namespace SMBD
             return s;
         }
 
+        //Fucnion para revisar si la llave primaria esta repetida
         private bool existePK(string tabla, string pk, string nomAtrib)
         {
             var b = false;
@@ -1192,11 +1232,13 @@ namespace SMBD
             return b;
         }
 
+        //Funcion de pruebas
         private void dGV_nuevoRegistro_RowLeave(object sender, DataGridViewCellEventArgs e)
         {
 
         }
 
+        //Funcin que llama a la funcion de rear registro cuando se presiona la telca enter
         private void dGV_nuevoRegistro_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == '\r' || e.KeyChar == '\n')
@@ -1206,6 +1248,7 @@ namespace SMBD
             }
         }
 
+        //Revisa si hay datos en ese atributo
         private bool contieneDatos(string tabla, string nomAtributo)
         {
             var b = false;
@@ -1244,6 +1287,7 @@ namespace SMBD
             return b;
         }
 
+        //Funcion para eliminar atributos
         private void btn_EliminarAtributo_Click(object sender, EventArgs e)
         {
             var ind = dGV_AtributosTabla.CurrentCell.ColumnIndex;
@@ -1255,7 +1299,7 @@ namespace SMBD
                 if (vacio == false)
                     throw new Exception("Este atributo contiene datos");
 
-                var tab = tablas.Find(t => t.atributos.Find(atr => atr.nombre == dGV_AtributosTabla.Columns[ind].Name) != null);
+                var tab = tablas.Find(t => t.atributos.Find(atr => atr.nombre == dGV_AtributosTabla.Columns[ind].Name) != null && t.nombre == Path.GetFileName(tablaSeleccionada));
                 if (tab != null)
                 {
                     var atr = tab.atributos.Find(a => a.nombre == dGV_AtributosTabla.Columns[ind].Name);
@@ -1276,6 +1320,7 @@ namespace SMBD
             }
         }
 
+        //Funcion para eliminar un registro
         private void btn_eliminarRegistro_Click(object sender, EventArgs e)
         {
 
@@ -1290,6 +1335,7 @@ namespace SMBD
             eliminaRegistro(rIndex, cIndex, tablaSeleccionada);
         }
 
+        //Elimina el registro seleccionado
         private void eliminaRegistro(int rIndex, int cIndex, string tabSel)
         {
             if (cIndex != -1 && rIndex != -1)
@@ -1327,7 +1373,7 @@ namespace SMBD
                             else
                             {
                                 if (pk == true)
-                                    eliminaRegistrosCascada(t.atributos[cIndex], dGV_AtributosTabla.Rows[pkIndex].Cells[cIndex].Value.ToString(), t.nombre);
+                                    eliminaRegistrosCascada(t.atributos[pkIndex], dGV_AtributosTabla.Rows[rIndex].Cells[pkIndex].Value.ToString(), t.nombre);
                             }
                         }
                         cargaTablaSeleccionada();
@@ -1340,6 +1386,7 @@ namespace SMBD
             }
         }
 
+        //Elimina los registros de forma recursiva
         private void eliminaRegistrosCascada(Atributo atrib, string dato, string tabSel)
         {
             var t = tablas.Find(x => x.nombre == Path.GetFileName(tabSel));
@@ -1349,7 +1396,6 @@ namespace SMBD
 
             if (t != null)
             {
-                //eliminaRegistros();
                 try
                 {
                     var arch = this.pathBase + Path.DirectorySeparatorChar + tabSel;
@@ -1408,8 +1454,9 @@ namespace SMBD
                             if (indexPK != -1)
                                 eliminaRegistrosCascada(atribs[indexPK], lista[0][atribs[indexPK].nombre].ToString(), ts[i].nombre);
 
-                            lista.RemoveAll(l => l.TryGetValue(atrib.nombre, out o) == true);
+                            lista.RemoveAll(l => l.TryGetValue(atrib.nombre, out o) == true && l[atrib.nombre].ToString() == dato);
 
+                            guardaTabla(arch, lista);
                             if (lista.Count == 0)
                             {
                                 for (int j = 0; j < atribs.Count; j++)
@@ -1428,6 +1475,7 @@ namespace SMBD
             }
         }
 
+        //Funcion para eliminar el registro seleccionado
         private void eliminaRegistros(int i, string tabla)
         {
             var lista = new List<Dictionary<string, object>>();
@@ -1470,6 +1518,7 @@ namespace SMBD
         }
 
         #region Consultas
+        //Funcion para abrir el formulario para la consultas
         private void consultasToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             switch (e.ClickedItem.AccessibleName)
