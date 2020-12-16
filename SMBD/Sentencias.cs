@@ -396,8 +396,9 @@ namespace SMBD.Sentencias
             {
                 if (s.Contains('.'))
                 {
-                    tab = s.Split('.')[0];
-                    if (tab1.nombre != tab && tab2.nombre != tab)
+                    //tab = s.Split('.')[0];
+                    tab = s.Substring(0, s.IndexOf('.'));
+                    if (tab1.nombre != (tab + ".t") && tab2.nombre != (tab + ".t"))
                         return false;
                 }
             }
