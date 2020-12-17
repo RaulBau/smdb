@@ -99,7 +99,7 @@ namespace SMBD
             if (!consulta.baseAbierta())
             {
                 ejecuta = false;
-               return msg = "Abre una base de datos\n";
+                return msg = "Abre una base de datos\n";
             }
 
             if (consulta.selectAll(entrada))
@@ -111,7 +111,7 @@ namespace SMBD
                     return msg = "Se mostraron todos los atributos de " + consulta.tabla1 + ".\n";
                 }
                 else
-                    rTB_ejecucion.AppendText(consulta.resultado + "\n");
+                    return consulta.resultado + "\n";
             }
             else
             {
@@ -120,11 +120,10 @@ namespace SMBD
                     if (consulta.ejecutaSelectAtributos(false))
                     {
                         ejecuta = true;
-                        rTB_ejecucion.AppendText(consulta.resultado + "\n");
-                        return msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + ".\n";
+                        return consulta.resultado + "\n";
                     }
                     else
-                        rTB_ejecucion.AppendText(consulta.resultado + "\n");
+                        return consulta.resultado + "\n";
                 }
                 else
                 {
@@ -133,11 +132,10 @@ namespace SMBD
                         if (consulta.ejecutaSelectAtributos(true))
                         {
                             ejecuta = true;
-                            rTB_ejecucion.AppendText(consulta.resultado + "\n");
-                            return msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + " donde " + consulta.nomAtrib + " " + consulta.condicion + " " + consulta.valor + "\n";
+                            return consulta.resultado + "\n";
                         }
                         else
-                            rTB_ejecucion.AppendText(consulta.resultado + "\n");
+                            return consulta.resultado + "\n";
                     }
                     else
                     {
@@ -146,11 +144,13 @@ namespace SMBD
                             if (consulta.ejecutaSelectInnerJoin())
                             {
                                 ejecuta = true;
-                                rTB_ejecucion.AppendText(consulta.resultado + "\n");
-                                return msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + " donde se unio con la tabla " + consulta.tabla2 + "\n";
+                                return consulta.resultado + "\n";
                             }
-                            else rTB_ejecucion.AppendText(consulta.resultado + "\n");
+                            else
+                                return consulta.resultado + "\n";
                         }
+                        else
+                            return consulta.resultado + "\n";
                     }
                 }
             }
@@ -236,7 +236,7 @@ namespace SMBD
 
         //Funcion para eejcutar las sentencias al presionar la tecla F5
         private void rTB_Sentencias_KeyDown(object sender, KeyEventArgs e)
-        {
+       {
             if (e.KeyCode == Keys.F5)
             {
                 rTB_ejecucion.AppendText(ejecutaSentencia(rTB_Sentencias.SelectedText));

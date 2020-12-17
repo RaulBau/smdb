@@ -21,6 +21,7 @@ namespace SMBD.Sentencias
         public string nomAtrib = "";
         public string condicion = "";
         public string valor = "";
+        public string resultado;
 
         //Constuctor de la clase
         public Sentencias()
@@ -32,6 +33,7 @@ namespace SMBD.Sentencias
             atributos = new List<string>();
             sentenciaCorrecta = false;
             atributo = "";
+            resultado = "";
         }
 
         //Funcion para inicialozar los datos
@@ -43,6 +45,7 @@ namespace SMBD.Sentencias
             nomAtrib = "";
             condicion = "";
             valor = "";
+            resultado = "";
         }
 
         //Funcion para verificar la sintaxis de select all
@@ -103,7 +106,7 @@ namespace SMBD.Sentencias
 
         //Funcion para verificar la sintaxis de inner join
         public bool innerJoin(string entrada)
-        {
+         {
             string atrA = "", atrB = "";
             MatchCollection matchCol = innerJoinRegEx.Matches(entrada);
             GroupCollection groupCol = innerJoinRegEx.Match(entrada).Groups;
@@ -118,7 +121,10 @@ namespace SMBD.Sentencias
                 tabla2 = groupCol[8].Value;
 
                 if (tabla1 != groupCol[10].Value || tabla2 != groupCol[12].Value)
+                {
+                    resultado = "Una tabla no existe.";
                     return sentenciaCorrecta;
+                }
 
                 atrA = groupCol[11].Value; atrB = groupCol[13].Value;
 
@@ -157,7 +163,6 @@ namespace SMBD.Sentencias
 
     class Consultas : Sentencias
     {
-        public string resultado;
         public List<string> atributosTabla1, atributosTabla2;
         public List<List<string>> datos;
         public List<string> atribNoSelT1, atribNoSelT2;
