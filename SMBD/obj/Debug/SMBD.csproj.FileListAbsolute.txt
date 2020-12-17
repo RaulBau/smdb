@@ -44,3 +44,8 @@ D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\obj\Deb
 D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\obj\Debug\SMBD.exe
 D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\obj\Debug\SMBD.pdb
 D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\obj\Debug\SMBD.csprojAssemblyReference.cache
+D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\bin\Debug\SMBD.exe.manifest
+D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\bin\Debug\SMBD.application
+D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\obj\Debug\SMBD.TrustInfo.xml
+D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\obj\Debug\SMBD.exe.manifest
+D:\Universidad\2020_2021_1\Bases de datos\Proyecto\proyecto-cs\SMBD\SMBD\obj\Debug\SMBD.application
