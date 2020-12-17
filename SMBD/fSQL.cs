@@ -99,7 +99,7 @@ namespace SMBD
             if (!consulta.baseAbierta())
             {
                 ejecuta = false;
-                msg = "Abre una base de datos\n";
+               return msg = "Abre una base de datos\n";
             }
 
             if (consulta.selectAll(entrada))
@@ -108,7 +108,7 @@ namespace SMBD
                 {
                     ejecuta = true;
                     rTB_ejecucion.AppendText(consulta.resultado + "\n");
-                    msg = "Se mostraron todos los atributos de " + consulta.tabla1 + ".\n";
+                    return msg = "Se mostraron todos los atributos de " + consulta.tabla1 + ".\n";
                 }
                 else
                     rTB_ejecucion.AppendText(consulta.resultado + "\n");
@@ -121,7 +121,7 @@ namespace SMBD
                     {
                         ejecuta = true;
                         rTB_ejecucion.AppendText(consulta.resultado + "\n");
-                        msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + ".\n";
+                        return msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + ".\n";
                     }
                     else
                         rTB_ejecucion.AppendText(consulta.resultado + "\n");
@@ -134,7 +134,7 @@ namespace SMBD
                         {
                             ejecuta = true;
                             rTB_ejecucion.AppendText(consulta.resultado + "\n");
-                            msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + " donde " + consulta.nomAtrib + " " + consulta.condicion + " " + consulta.valor + "\n";
+                            return msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + " donde " + consulta.nomAtrib + " " + consulta.condicion + " " + consulta.valor + "\n";
                         }
                         else
                             rTB_ejecucion.AppendText(consulta.resultado + "\n");
@@ -147,7 +147,7 @@ namespace SMBD
                             {
                                 ejecuta = true;
                                 rTB_ejecucion.AppendText(consulta.resultado + "\n");
-                                msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + " donde se unio con la tabla " + consulta.tabla2 + "\n";
+                                return msg = "Se mostraron " + consulta.obtenAtributos() + "los atributos de " + consulta.tabla1 + " donde se unio con la tabla " + consulta.tabla2 + "\n";
                             }
                             else rTB_ejecucion.AppendText(consulta.resultado + "\n");
                         }
@@ -159,67 +159,6 @@ namespace SMBD
 
             return msg;
         }
-
-        //Funcion para mostrar los resultados de la consulta en un data grid
-        //private void muestraResultados()
-        //{
-        //    dGV_Registros.Columns.Clear();
-        //    if (!ejecuta)
-        //        return;
-
-        //    try
-        //    {
-        //        for (int i = 0; i < consulta.atributosTabla1.Count; i++)
-        //        {
-        //            dGV_Registros.Columns.Add(consulta.tabla1 + "." + consulta.atributosTabla1[i], consulta.atributosTabla1[i]);
-        //        }
-
-        //        for (int i = 0; i < consulta.atributosTabla2.Count; i++)
-        //        {
-        //            dGV_Registros.Columns.Add(consulta.tabla2 + "." + consulta.atributosTabla2[i], consulta.atributosTabla2[i]);
-        //        }
-
-        //        for (int i = 0; i < consulta.datos.Count; i++)
-        //        {
-        //            dGV_Registros.Rows.Add(consulta.datos[i].ToArray());
-        //        }
-
-        //        for (int i = 0; i < consulta.atribNoSelT1.Count; i++)
-        //            dGV_Registros.Columns.Remove(dGV_Registros.Columns[consulta.tabla1 + "." + consulta.atribNoSelT1[i]]);
-
-        //        int desplazamiento = consulta.atribNoSelT1.Count + 1;
-
-        //        for (int i = 0; i < consulta.atribNoSelT2.Count; i++)
-        //            dGV_Registros.Columns.Remove(dGV_Registros.Columns[consulta.tabla2 + "." + consulta.atribNoSelT2[i]]);
-
-        //        for (int i = 0; i < consulta.atributos.Count; i++)
-        //        {
-        //            if (dGV_Registros.Columns.Contains(consulta.tabla1 + "." + consulta.atributos[i]))
-        //            {
-        //                dGV_Registros.Columns[consulta.tabla1 + "." + consulta.atributos[i]].DisplayIndex = i;
-        //            }
-        //            else if (dGV_Registros.Columns.Contains(consulta.atributos[i]))
-        //            {
-        //                dGV_Registros.Columns[consulta.atributos[i]].DisplayIndex = i;
-        //            }
-        //            else if (dGV_Registros.Columns.Contains(consulta.tabla2 + "." + consulta.atributos[i]))
-        //            {
-        //                dGV_Registros.Columns[consulta.tabla2 + "." + consulta.atributos[i]].DisplayIndex = i;
-        //            }
-        //            else if (dGV_Registros.Columns.Contains(consulta.atributos[i]))
-        //            {
-        //                dGV_Registros.Columns[consulta.atributos[i]].DisplayIndex = i;
-        //            }
-        //            if (consulta.atributos[i].Contains("."))
-        //                dGV_Registros.Columns[consulta.atributos[i]].HeaderText = consulta.atributos[i];
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        MessageBox.Show(e.Message);
-        //        dGV_Registros.Columns.Clear();
-        //    }
-        //}
 
         private void muestraResultados()
         {
