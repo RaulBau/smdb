@@ -72,6 +72,7 @@ namespace SMBD.Sentencias
             GroupCollection groupCol = selectAtributosRegEx.Match(entrada).Groups;
             sentenciaCorrecta = false;
 
+            resultado = "Error de sintaxis.";
             if (matchCol.Count == 1 && matchCol[0].Length == entrada.Length)
             {
                 inicializaDatos();
@@ -90,6 +91,7 @@ namespace SMBD.Sentencias
             GroupCollection groupCol = selectWhereRegEx.Match(entrada).Groups;
             sentenciaCorrecta = false;
 
+            resultado = "Error de sintaxis.";
             if (matchCol.Count == 1 && matchCol[0].Length == entrada.Length)
             {
                 inicializaDatos();
@@ -112,7 +114,7 @@ namespace SMBD.Sentencias
             GroupCollection groupCol = innerJoinRegEx.Match(entrada).Groups;
 
             sentenciaCorrecta = false;
-
+            resultado = "Error de sintaxis.";
             if (matchCol.Count == 1 && matchCol[0].Length == entrada.Length)
             {
                 inicializaDatos();

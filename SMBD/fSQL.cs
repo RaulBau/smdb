@@ -91,6 +91,10 @@ namespace SMBD
         public string ejecutaSentencia(string entrada)
         {
             ejecuta = false;
+            if (entrada == "")
+            {
+                return "";
+            }
             dGV_Registros.Rows.Clear();
             dGV_Registros.Columns.Clear();
             rTB_ejecucion.Clear();
